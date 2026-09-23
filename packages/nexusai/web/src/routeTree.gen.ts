@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as authRouteRouteImport } from './routes/(auth)/route'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as ChatRouteImport } from './routes/chat'
 import { Route as ConsoleRouteRouteImport } from './routes/console/route'
 import { Route as DocsRouteImport } from './routes/docs'
@@ -39,6 +40,8 @@ import { Route as errors404RouteImport } from './routes/(errors)/404'
 import { Route as errors500RouteImport } from './routes/(errors)/500'
 import { Route as errors503RouteImport } from './routes/(errors)/503'
 import { Route as AboutIndexRouteImport } from './routes/about/index'
+import { Route as AdminChat2linkRouteImport } from './routes/admin/chat2link'
+import { Route as AdminSystemSettingsRouteRouteImport } from './routes/admin/system-settings/route'
 import { Route as ConsoleBillingRouteImport } from './routes/console/billing'
 import { Route as ConsoleKeysRouteImport } from './routes/console/keys'
 import { Route as ConsoleProfileRouteImport } from './routes/console/profile'
@@ -49,8 +52,45 @@ import { Route as PricingIndexRouteImport } from './routes/pricing/index'
 import { Route as RankingsIndexRouteImport } from './routes/rankings/index'
 import { Route as SetupIndexRouteImport } from './routes/setup/index'
 import { Route as authUserResetRouteImport } from './routes/(auth)/user/reset'
+import { Route as AdminChannelsIndexRouteImport } from './routes/admin/channels/index'
+import { Route as AdminChatChatIdRouteImport } from './routes/admin/chat/$chatId'
+import { Route as AdminDashboardIndexRouteImport } from './routes/admin/dashboard/index'
+import { Route as AdminDashboardSectionRouteImport } from './routes/admin/dashboard/$section'
+import { Route as AdminErrorsErrorRouteImport } from './routes/admin/errors/$error'
+import { Route as AdminKeysIndexRouteImport } from './routes/admin/keys/index'
+import { Route as AdminModelsIndexRouteImport } from './routes/admin/models/index'
+import { Route as AdminModelsSectionRouteImport } from './routes/admin/models/$section'
+import { Route as AdminPlaygroundIndexRouteImport } from './routes/admin/playground/index'
+import { Route as AdminProfileIndexRouteImport } from './routes/admin/profile/index'
+import { Route as AdminRedemptionCodesIndexRouteImport } from './routes/admin/redemption-codes/index'
+import { Route as AdminSecurityIndexRouteImport } from './routes/admin/security/index'
+import { Route as AdminSubscriptionsIndexRouteImport } from './routes/admin/subscriptions/index'
+import { Route as AdminSystemInfoIndexRouteImport } from './routes/admin/system-info/index'
+import { Route as AdminSystemSettingsIndexRouteImport } from './routes/admin/system-settings/index'
+import { Route as AdminTaskPluginsIndexRouteImport } from './routes/admin/task-plugins/index'
+import { Route as AdminUsageLogsIndexRouteImport } from './routes/admin/usage-logs/index'
+import { Route as AdminUsageLogsSectionRouteImport } from './routes/admin/usage-logs/$section'
+import { Route as AdminUsageLogsAuditRouteImport } from './routes/admin/usage-logs/audit'
+import { Route as AdminUsersIndexRouteImport } from './routes/admin/users/index'
+import { Route as AdminWalletIndexRouteImport } from './routes/admin/wallet/index'
 import { Route as ModelProviderModelRouteImport } from './routes/model/$provider/$model'
 import { Route as PricingModelIdIndexRouteImport } from './routes/pricing/$modelId/index'
+import { Route as AdminSystemSettingsAuthIndexRouteImport } from './routes/admin/system-settings/auth/index'
+import { Route as AdminSystemSettingsAuthSectionRouteImport } from './routes/admin/system-settings/auth/$section'
+import { Route as AdminSystemSettingsBillingIndexRouteImport } from './routes/admin/system-settings/billing/index'
+import { Route as AdminSystemSettingsBillingSectionRouteImport } from './routes/admin/system-settings/billing/$section'
+import { Route as AdminSystemSettingsContentIndexRouteImport } from './routes/admin/system-settings/content/index'
+import { Route as AdminSystemSettingsContentSectionRouteImport } from './routes/admin/system-settings/content/$section'
+import { Route as AdminSystemSettingsModelsIndexRouteImport } from './routes/admin/system-settings/models/index'
+import { Route as AdminSystemSettingsModelsSectionRouteImport } from './routes/admin/system-settings/models/$section'
+import { Route as AdminSystemSettingsOperationsIndexRouteImport } from './routes/admin/system-settings/operations/index'
+import { Route as AdminSystemSettingsOperationsSectionRouteImport } from './routes/admin/system-settings/operations/$section'
+import { Route as AdminSystemSettingsRequestPoliciesIndexRouteImport } from './routes/admin/system-settings/request-policies/index'
+import { Route as AdminSystemSettingsRequestPoliciesSectionRouteImport } from './routes/admin/system-settings/request-policies/$section'
+import { Route as AdminSystemSettingsSecurityIndexRouteImport } from './routes/admin/system-settings/security/index'
+import { Route as AdminSystemSettingsSecuritySectionRouteImport } from './routes/admin/system-settings/security/$section'
+import { Route as AdminSystemSettingsSiteIndexRouteImport } from './routes/admin/system-settings/site/index'
+import { Route as AdminSystemSettingsSiteSectionRouteImport } from './routes/admin/system-settings/site/$section'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -64,6 +104,11 @@ const authRouteRoute = authRouteRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRouteRoute = AdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChatRoute = ChatRouteImport.update({
@@ -201,6 +246,17 @@ const AboutIndexRoute = AboutIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AboutRoute,
 } as any)
+const AdminChat2linkRoute = AdminChat2linkRouteImport.update({
+  id: '/chat2link',
+  path: '/chat2link',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminSystemSettingsRouteRoute =
+  AdminSystemSettingsRouteRouteImport.update({
+    id: '/system-settings',
+    path: '/system-settings',
+    getParentRoute: () => AdminRouteRoute,
+  } as any)
 const ConsoleBillingRoute = ConsoleBillingRouteImport.update({
   id: '/billing',
   path: '/billing',
@@ -251,6 +307,113 @@ const authUserResetRoute = authUserResetRouteImport.update({
   path: '/user/reset',
   getParentRoute: () => authRouteRoute,
 } as any)
+const AdminChannelsIndexRoute = AdminChannelsIndexRouteImport.update({
+  id: '/channels/',
+  path: '/channels/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminChatChatIdRoute = AdminChatChatIdRouteImport.update({
+  id: '/chat/$chatId',
+  path: '/chat/$chatId',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminDashboardIndexRoute = AdminDashboardIndexRouteImport.update({
+  id: '/dashboard/',
+  path: '/dashboard/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminDashboardSectionRoute = AdminDashboardSectionRouteImport.update({
+  id: '/dashboard/$section',
+  path: '/dashboard/$section',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminErrorsErrorRoute = AdminErrorsErrorRouteImport.update({
+  id: '/errors/$error',
+  path: '/errors/$error',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminKeysIndexRoute = AdminKeysIndexRouteImport.update({
+  id: '/keys/',
+  path: '/keys/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminModelsIndexRoute = AdminModelsIndexRouteImport.update({
+  id: '/models/',
+  path: '/models/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminModelsSectionRoute = AdminModelsSectionRouteImport.update({
+  id: '/models/$section',
+  path: '/models/$section',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminPlaygroundIndexRoute = AdminPlaygroundIndexRouteImport.update({
+  id: '/playground/',
+  path: '/playground/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminProfileIndexRoute = AdminProfileIndexRouteImport.update({
+  id: '/profile/',
+  path: '/profile/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminRedemptionCodesIndexRoute =
+  AdminRedemptionCodesIndexRouteImport.update({
+    id: '/redemption-codes/',
+    path: '/redemption-codes/',
+    getParentRoute: () => AdminRouteRoute,
+  } as any)
+const AdminSecurityIndexRoute = AdminSecurityIndexRouteImport.update({
+  id: '/security/',
+  path: '/security/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminSubscriptionsIndexRoute = AdminSubscriptionsIndexRouteImport.update({
+  id: '/subscriptions/',
+  path: '/subscriptions/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminSystemInfoIndexRoute = AdminSystemInfoIndexRouteImport.update({
+  id: '/system-info/',
+  path: '/system-info/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminSystemSettingsIndexRoute =
+  AdminSystemSettingsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AdminSystemSettingsRouteRoute,
+  } as any)
+const AdminTaskPluginsIndexRoute = AdminTaskPluginsIndexRouteImport.update({
+  id: '/task-plugins/',
+  path: '/task-plugins/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminUsageLogsIndexRoute = AdminUsageLogsIndexRouteImport.update({
+  id: '/usage-logs/',
+  path: '/usage-logs/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminUsageLogsSectionRoute = AdminUsageLogsSectionRouteImport.update({
+  id: '/usage-logs/$section',
+  path: '/usage-logs/$section',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminUsageLogsAuditRoute = AdminUsageLogsAuditRouteImport.update({
+  id: '/usage-logs/audit',
+  path: '/usage-logs/audit',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminUsersIndexRoute = AdminUsersIndexRouteImport.update({
+  id: '/users/',
+  path: '/users/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminWalletIndexRoute = AdminWalletIndexRouteImport.update({
+  id: '/wallet/',
+  path: '/wallet/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const ModelProviderModelRoute = ModelProviderModelRouteImport.update({
   id: '/model/$provider/$model',
   path: '/model/$provider/$model',
@@ -261,9 +424,106 @@ const PricingModelIdIndexRoute = PricingModelIdIndexRouteImport.update({
   path: '/pricing/$modelId/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminSystemSettingsAuthIndexRoute =
+  AdminSystemSettingsAuthIndexRouteImport.update({
+    id: '/auth/',
+    path: '/auth/',
+    getParentRoute: () => AdminSystemSettingsRouteRoute,
+  } as any)
+const AdminSystemSettingsAuthSectionRoute =
+  AdminSystemSettingsAuthSectionRouteImport.update({
+    id: '/auth/$section',
+    path: '/auth/$section',
+    getParentRoute: () => AdminSystemSettingsRouteRoute,
+  } as any)
+const AdminSystemSettingsBillingIndexRoute =
+  AdminSystemSettingsBillingIndexRouteImport.update({
+    id: '/billing/',
+    path: '/billing/',
+    getParentRoute: () => AdminSystemSettingsRouteRoute,
+  } as any)
+const AdminSystemSettingsBillingSectionRoute =
+  AdminSystemSettingsBillingSectionRouteImport.update({
+    id: '/billing/$section',
+    path: '/billing/$section',
+    getParentRoute: () => AdminSystemSettingsRouteRoute,
+  } as any)
+const AdminSystemSettingsContentIndexRoute =
+  AdminSystemSettingsContentIndexRouteImport.update({
+    id: '/content/',
+    path: '/content/',
+    getParentRoute: () => AdminSystemSettingsRouteRoute,
+  } as any)
+const AdminSystemSettingsContentSectionRoute =
+  AdminSystemSettingsContentSectionRouteImport.update({
+    id: '/content/$section',
+    path: '/content/$section',
+    getParentRoute: () => AdminSystemSettingsRouteRoute,
+  } as any)
+const AdminSystemSettingsModelsIndexRoute =
+  AdminSystemSettingsModelsIndexRouteImport.update({
+    id: '/models/',
+    path: '/models/',
+    getParentRoute: () => AdminSystemSettingsRouteRoute,
+  } as any)
+const AdminSystemSettingsModelsSectionRoute =
+  AdminSystemSettingsModelsSectionRouteImport.update({
+    id: '/models/$section',
+    path: '/models/$section',
+    getParentRoute: () => AdminSystemSettingsRouteRoute,
+  } as any)
+const AdminSystemSettingsOperationsIndexRoute =
+  AdminSystemSettingsOperationsIndexRouteImport.update({
+    id: '/operations/',
+    path: '/operations/',
+    getParentRoute: () => AdminSystemSettingsRouteRoute,
+  } as any)
+const AdminSystemSettingsOperationsSectionRoute =
+  AdminSystemSettingsOperationsSectionRouteImport.update({
+    id: '/operations/$section',
+    path: '/operations/$section',
+    getParentRoute: () => AdminSystemSettingsRouteRoute,
+  } as any)
+const AdminSystemSettingsRequestPoliciesIndexRoute =
+  AdminSystemSettingsRequestPoliciesIndexRouteImport.update({
+    id: '/request-policies/',
+    path: '/request-policies/',
+    getParentRoute: () => AdminSystemSettingsRouteRoute,
+  } as any)
+const AdminSystemSettingsRequestPoliciesSectionRoute =
+  AdminSystemSettingsRequestPoliciesSectionRouteImport.update({
+    id: '/request-policies/$section',
+    path: '/request-policies/$section',
+    getParentRoute: () => AdminSystemSettingsRouteRoute,
+  } as any)
+const AdminSystemSettingsSecurityIndexRoute =
+  AdminSystemSettingsSecurityIndexRouteImport.update({
+    id: '/security/',
+    path: '/security/',
+    getParentRoute: () => AdminSystemSettingsRouteRoute,
+  } as any)
+const AdminSystemSettingsSecuritySectionRoute =
+  AdminSystemSettingsSecuritySectionRouteImport.update({
+    id: '/security/$section',
+    path: '/security/$section',
+    getParentRoute: () => AdminSystemSettingsRouteRoute,
+  } as any)
+const AdminSystemSettingsSiteIndexRoute =
+  AdminSystemSettingsSiteIndexRouteImport.update({
+    id: '/site/',
+    path: '/site/',
+    getParentRoute: () => AdminSystemSettingsRouteRoute,
+  } as any)
+const AdminSystemSettingsSiteSectionRoute =
+  AdminSystemSettingsSiteSectionRouteImport.update({
+    id: '/site/$section',
+    path: '/site/$section',
+    getParentRoute: () => AdminSystemSettingsRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRouteWithChildren
   '/console': typeof ConsoleRouteRouteWithChildren
   '/about': typeof AboutRouteWithChildren
   '/chat': typeof ChatRoute
@@ -279,6 +539,7 @@ export interface FileRoutesByFullPath {
   '/storynest': typeof StorynestRoute
   '/terms': typeof TermsRoute
   '/user-agreement': typeof UserAgreementRoute
+  '/admin/system-settings': typeof AdminSystemSettingsRouteRouteWithChildren
   '/forgot-password': typeof authForgotPasswordRoute
   '/oauth': typeof authOauthRoute
   '/otp': typeof authOtpRoute
@@ -291,6 +552,7 @@ export interface FileRoutesByFullPath {
   '/404': typeof errors404Route
   '/500': typeof errors500Route
   '/503': typeof errors503Route
+  '/admin/chat2link': typeof AdminChat2linkRoute
   '/console/billing': typeof ConsoleBillingRoute
   '/console/keys': typeof ConsoleKeysRoute
   '/console/profile': typeof ConsoleProfileRoute
@@ -302,11 +564,49 @@ export interface FileRoutesByFullPath {
   '/rankings/': typeof RankingsIndexRoute
   '/setup/': typeof SetupIndexRoute
   '/user/reset': typeof authUserResetRoute
+  '/admin/chat/$chatId': typeof AdminChatChatIdRoute
+  '/admin/dashboard/$section': typeof AdminDashboardSectionRoute
+  '/admin/errors/$error': typeof AdminErrorsErrorRoute
+  '/admin/models/$section': typeof AdminModelsSectionRoute
+  '/admin/usage-logs/$section': typeof AdminUsageLogsSectionRoute
+  '/admin/usage-logs/audit': typeof AdminUsageLogsAuditRoute
   '/model/$provider/$model': typeof ModelProviderModelRoute
+  '/admin/channels/': typeof AdminChannelsIndexRoute
+  '/admin/dashboard/': typeof AdminDashboardIndexRoute
+  '/admin/keys/': typeof AdminKeysIndexRoute
+  '/admin/models/': typeof AdminModelsIndexRoute
+  '/admin/playground/': typeof AdminPlaygroundIndexRoute
+  '/admin/profile/': typeof AdminProfileIndexRoute
+  '/admin/redemption-codes/': typeof AdminRedemptionCodesIndexRoute
+  '/admin/security/': typeof AdminSecurityIndexRoute
+  '/admin/subscriptions/': typeof AdminSubscriptionsIndexRoute
+  '/admin/system-info/': typeof AdminSystemInfoIndexRoute
+  '/admin/system-settings/': typeof AdminSystemSettingsIndexRoute
+  '/admin/task-plugins/': typeof AdminTaskPluginsIndexRoute
+  '/admin/usage-logs/': typeof AdminUsageLogsIndexRoute
+  '/admin/users/': typeof AdminUsersIndexRoute
+  '/admin/wallet/': typeof AdminWalletIndexRoute
   '/pricing/$modelId/': typeof PricingModelIdIndexRoute
+  '/admin/system-settings/auth/$section': typeof AdminSystemSettingsAuthSectionRoute
+  '/admin/system-settings/billing/$section': typeof AdminSystemSettingsBillingSectionRoute
+  '/admin/system-settings/content/$section': typeof AdminSystemSettingsContentSectionRoute
+  '/admin/system-settings/models/$section': typeof AdminSystemSettingsModelsSectionRoute
+  '/admin/system-settings/operations/$section': typeof AdminSystemSettingsOperationsSectionRoute
+  '/admin/system-settings/request-policies/$section': typeof AdminSystemSettingsRequestPoliciesSectionRoute
+  '/admin/system-settings/security/$section': typeof AdminSystemSettingsSecuritySectionRoute
+  '/admin/system-settings/site/$section': typeof AdminSystemSettingsSiteSectionRoute
+  '/admin/system-settings/auth/': typeof AdminSystemSettingsAuthIndexRoute
+  '/admin/system-settings/billing/': typeof AdminSystemSettingsBillingIndexRoute
+  '/admin/system-settings/content/': typeof AdminSystemSettingsContentIndexRoute
+  '/admin/system-settings/models/': typeof AdminSystemSettingsModelsIndexRoute
+  '/admin/system-settings/operations/': typeof AdminSystemSettingsOperationsIndexRoute
+  '/admin/system-settings/request-policies/': typeof AdminSystemSettingsRequestPoliciesIndexRoute
+  '/admin/system-settings/security/': typeof AdminSystemSettingsSecurityIndexRoute
+  '/admin/system-settings/site/': typeof AdminSystemSettingsSiteIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRouteWithChildren
   '/console': typeof ConsoleRouteRouteWithChildren
   '/chat': typeof ChatRoute
   '/docs': typeof DocsRoute
@@ -332,6 +632,7 @@ export interface FileRoutesByTo {
   '/404': typeof errors404Route
   '/500': typeof errors500Route
   '/503': typeof errors503Route
+  '/admin/chat2link': typeof AdminChat2linkRoute
   '/console/billing': typeof ConsoleBillingRoute
   '/console/keys': typeof ConsoleKeysRoute
   '/console/profile': typeof ConsoleProfileRoute
@@ -343,13 +644,51 @@ export interface FileRoutesByTo {
   '/rankings': typeof RankingsIndexRoute
   '/setup': typeof SetupIndexRoute
   '/user/reset': typeof authUserResetRoute
+  '/admin/chat/$chatId': typeof AdminChatChatIdRoute
+  '/admin/dashboard/$section': typeof AdminDashboardSectionRoute
+  '/admin/errors/$error': typeof AdminErrorsErrorRoute
+  '/admin/models/$section': typeof AdminModelsSectionRoute
+  '/admin/usage-logs/$section': typeof AdminUsageLogsSectionRoute
+  '/admin/usage-logs/audit': typeof AdminUsageLogsAuditRoute
   '/model/$provider/$model': typeof ModelProviderModelRoute
+  '/admin/channels': typeof AdminChannelsIndexRoute
+  '/admin/dashboard': typeof AdminDashboardIndexRoute
+  '/admin/keys': typeof AdminKeysIndexRoute
+  '/admin/models': typeof AdminModelsIndexRoute
+  '/admin/playground': typeof AdminPlaygroundIndexRoute
+  '/admin/profile': typeof AdminProfileIndexRoute
+  '/admin/redemption-codes': typeof AdminRedemptionCodesIndexRoute
+  '/admin/security': typeof AdminSecurityIndexRoute
+  '/admin/subscriptions': typeof AdminSubscriptionsIndexRoute
+  '/admin/system-info': typeof AdminSystemInfoIndexRoute
+  '/admin/system-settings': typeof AdminSystemSettingsIndexRoute
+  '/admin/task-plugins': typeof AdminTaskPluginsIndexRoute
+  '/admin/usage-logs': typeof AdminUsageLogsIndexRoute
+  '/admin/users': typeof AdminUsersIndexRoute
+  '/admin/wallet': typeof AdminWalletIndexRoute
   '/pricing/$modelId': typeof PricingModelIdIndexRoute
+  '/admin/system-settings/auth/$section': typeof AdminSystemSettingsAuthSectionRoute
+  '/admin/system-settings/billing/$section': typeof AdminSystemSettingsBillingSectionRoute
+  '/admin/system-settings/content/$section': typeof AdminSystemSettingsContentSectionRoute
+  '/admin/system-settings/models/$section': typeof AdminSystemSettingsModelsSectionRoute
+  '/admin/system-settings/operations/$section': typeof AdminSystemSettingsOperationsSectionRoute
+  '/admin/system-settings/request-policies/$section': typeof AdminSystemSettingsRequestPoliciesSectionRoute
+  '/admin/system-settings/security/$section': typeof AdminSystemSettingsSecuritySectionRoute
+  '/admin/system-settings/site/$section': typeof AdminSystemSettingsSiteSectionRoute
+  '/admin/system-settings/auth': typeof AdminSystemSettingsAuthIndexRoute
+  '/admin/system-settings/billing': typeof AdminSystemSettingsBillingIndexRoute
+  '/admin/system-settings/content': typeof AdminSystemSettingsContentIndexRoute
+  '/admin/system-settings/models': typeof AdminSystemSettingsModelsIndexRoute
+  '/admin/system-settings/operations': typeof AdminSystemSettingsOperationsIndexRoute
+  '/admin/system-settings/request-policies': typeof AdminSystemSettingsRequestPoliciesIndexRoute
+  '/admin/system-settings/security': typeof AdminSystemSettingsSecurityIndexRoute
+  '/admin/system-settings/site': typeof AdminSystemSettingsSiteIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/(auth)': typeof authRouteRouteWithChildren
+  '/admin': typeof AdminRouteRouteWithChildren
   '/console': typeof ConsoleRouteRouteWithChildren
   '/about': typeof AboutRouteWithChildren
   '/chat': typeof ChatRoute
@@ -365,6 +704,7 @@ export interface FileRoutesById {
   '/storynest': typeof StorynestRoute
   '/terms': typeof TermsRoute
   '/user-agreement': typeof UserAgreementRoute
+  '/admin/system-settings': typeof AdminSystemSettingsRouteRouteWithChildren
   '/(auth)/forgot-password': typeof authForgotPasswordRoute
   '/(auth)/oauth': typeof authOauthRoute
   '/(auth)/otp': typeof authOtpRoute
@@ -377,6 +717,7 @@ export interface FileRoutesById {
   '/(errors)/404': typeof errors404Route
   '/(errors)/500': typeof errors500Route
   '/(errors)/503': typeof errors503Route
+  '/admin/chat2link': typeof AdminChat2linkRoute
   '/console/billing': typeof ConsoleBillingRoute
   '/console/keys': typeof ConsoleKeysRoute
   '/console/profile': typeof ConsoleProfileRoute
@@ -388,13 +729,51 @@ export interface FileRoutesById {
   '/rankings/': typeof RankingsIndexRoute
   '/setup/': typeof SetupIndexRoute
   '/(auth)/user/reset': typeof authUserResetRoute
+  '/admin/chat/$chatId': typeof AdminChatChatIdRoute
+  '/admin/dashboard/$section': typeof AdminDashboardSectionRoute
+  '/admin/errors/$error': typeof AdminErrorsErrorRoute
+  '/admin/models/$section': typeof AdminModelsSectionRoute
+  '/admin/usage-logs/$section': typeof AdminUsageLogsSectionRoute
+  '/admin/usage-logs/audit': typeof AdminUsageLogsAuditRoute
   '/model/$provider/$model': typeof ModelProviderModelRoute
+  '/admin/channels/': typeof AdminChannelsIndexRoute
+  '/admin/dashboard/': typeof AdminDashboardIndexRoute
+  '/admin/keys/': typeof AdminKeysIndexRoute
+  '/admin/models/': typeof AdminModelsIndexRoute
+  '/admin/playground/': typeof AdminPlaygroundIndexRoute
+  '/admin/profile/': typeof AdminProfileIndexRoute
+  '/admin/redemption-codes/': typeof AdminRedemptionCodesIndexRoute
+  '/admin/security/': typeof AdminSecurityIndexRoute
+  '/admin/subscriptions/': typeof AdminSubscriptionsIndexRoute
+  '/admin/system-info/': typeof AdminSystemInfoIndexRoute
+  '/admin/system-settings/': typeof AdminSystemSettingsIndexRoute
+  '/admin/task-plugins/': typeof AdminTaskPluginsIndexRoute
+  '/admin/usage-logs/': typeof AdminUsageLogsIndexRoute
+  '/admin/users/': typeof AdminUsersIndexRoute
+  '/admin/wallet/': typeof AdminWalletIndexRoute
   '/pricing/$modelId/': typeof PricingModelIdIndexRoute
+  '/admin/system-settings/auth/$section': typeof AdminSystemSettingsAuthSectionRoute
+  '/admin/system-settings/billing/$section': typeof AdminSystemSettingsBillingSectionRoute
+  '/admin/system-settings/content/$section': typeof AdminSystemSettingsContentSectionRoute
+  '/admin/system-settings/models/$section': typeof AdminSystemSettingsModelsSectionRoute
+  '/admin/system-settings/operations/$section': typeof AdminSystemSettingsOperationsSectionRoute
+  '/admin/system-settings/request-policies/$section': typeof AdminSystemSettingsRequestPoliciesSectionRoute
+  '/admin/system-settings/security/$section': typeof AdminSystemSettingsSecuritySectionRoute
+  '/admin/system-settings/site/$section': typeof AdminSystemSettingsSiteSectionRoute
+  '/admin/system-settings/auth/': typeof AdminSystemSettingsAuthIndexRoute
+  '/admin/system-settings/billing/': typeof AdminSystemSettingsBillingIndexRoute
+  '/admin/system-settings/content/': typeof AdminSystemSettingsContentIndexRoute
+  '/admin/system-settings/models/': typeof AdminSystemSettingsModelsIndexRoute
+  '/admin/system-settings/operations/': typeof AdminSystemSettingsOperationsIndexRoute
+  '/admin/system-settings/request-policies/': typeof AdminSystemSettingsRequestPoliciesIndexRoute
+  '/admin/system-settings/security/': typeof AdminSystemSettingsSecurityIndexRoute
+  '/admin/system-settings/site/': typeof AdminSystemSettingsSiteIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/console'
     | '/about'
     | '/chat'
@@ -410,6 +789,7 @@ export interface FileRouteTypes {
     | '/storynest'
     | '/terms'
     | '/user-agreement'
+    | '/admin/system-settings'
     | '/forgot-password'
     | '/oauth'
     | '/otp'
@@ -422,6 +802,7 @@ export interface FileRouteTypes {
     | '/404'
     | '/500'
     | '/503'
+    | '/admin/chat2link'
     | '/console/billing'
     | '/console/keys'
     | '/console/profile'
@@ -433,11 +814,49 @@ export interface FileRouteTypes {
     | '/rankings/'
     | '/setup/'
     | '/user/reset'
+    | '/admin/chat/$chatId'
+    | '/admin/dashboard/$section'
+    | '/admin/errors/$error'
+    | '/admin/models/$section'
+    | '/admin/usage-logs/$section'
+    | '/admin/usage-logs/audit'
     | '/model/$provider/$model'
+    | '/admin/channels/'
+    | '/admin/dashboard/'
+    | '/admin/keys/'
+    | '/admin/models/'
+    | '/admin/playground/'
+    | '/admin/profile/'
+    | '/admin/redemption-codes/'
+    | '/admin/security/'
+    | '/admin/subscriptions/'
+    | '/admin/system-info/'
+    | '/admin/system-settings/'
+    | '/admin/task-plugins/'
+    | '/admin/usage-logs/'
+    | '/admin/users/'
+    | '/admin/wallet/'
     | '/pricing/$modelId/'
+    | '/admin/system-settings/auth/$section'
+    | '/admin/system-settings/billing/$section'
+    | '/admin/system-settings/content/$section'
+    | '/admin/system-settings/models/$section'
+    | '/admin/system-settings/operations/$section'
+    | '/admin/system-settings/request-policies/$section'
+    | '/admin/system-settings/security/$section'
+    | '/admin/system-settings/site/$section'
+    | '/admin/system-settings/auth/'
+    | '/admin/system-settings/billing/'
+    | '/admin/system-settings/content/'
+    | '/admin/system-settings/models/'
+    | '/admin/system-settings/operations/'
+    | '/admin/system-settings/request-policies/'
+    | '/admin/system-settings/security/'
+    | '/admin/system-settings/site/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/console'
     | '/chat'
     | '/docs'
@@ -463,6 +882,7 @@ export interface FileRouteTypes {
     | '/404'
     | '/500'
     | '/503'
+    | '/admin/chat2link'
     | '/console/billing'
     | '/console/keys'
     | '/console/profile'
@@ -474,12 +894,50 @@ export interface FileRouteTypes {
     | '/rankings'
     | '/setup'
     | '/user/reset'
+    | '/admin/chat/$chatId'
+    | '/admin/dashboard/$section'
+    | '/admin/errors/$error'
+    | '/admin/models/$section'
+    | '/admin/usage-logs/$section'
+    | '/admin/usage-logs/audit'
     | '/model/$provider/$model'
+    | '/admin/channels'
+    | '/admin/dashboard'
+    | '/admin/keys'
+    | '/admin/models'
+    | '/admin/playground'
+    | '/admin/profile'
+    | '/admin/redemption-codes'
+    | '/admin/security'
+    | '/admin/subscriptions'
+    | '/admin/system-info'
+    | '/admin/system-settings'
+    | '/admin/task-plugins'
+    | '/admin/usage-logs'
+    | '/admin/users'
+    | '/admin/wallet'
     | '/pricing/$modelId'
+    | '/admin/system-settings/auth/$section'
+    | '/admin/system-settings/billing/$section'
+    | '/admin/system-settings/content/$section'
+    | '/admin/system-settings/models/$section'
+    | '/admin/system-settings/operations/$section'
+    | '/admin/system-settings/request-policies/$section'
+    | '/admin/system-settings/security/$section'
+    | '/admin/system-settings/site/$section'
+    | '/admin/system-settings/auth'
+    | '/admin/system-settings/billing'
+    | '/admin/system-settings/content'
+    | '/admin/system-settings/models'
+    | '/admin/system-settings/operations'
+    | '/admin/system-settings/request-policies'
+    | '/admin/system-settings/security'
+    | '/admin/system-settings/site'
   id:
     | '__root__'
     | '/'
     | '/(auth)'
+    | '/admin'
     | '/console'
     | '/about'
     | '/chat'
@@ -495,6 +953,7 @@ export interface FileRouteTypes {
     | '/storynest'
     | '/terms'
     | '/user-agreement'
+    | '/admin/system-settings'
     | '/(auth)/forgot-password'
     | '/(auth)/oauth'
     | '/(auth)/otp'
@@ -507,6 +966,7 @@ export interface FileRouteTypes {
     | '/(errors)/404'
     | '/(errors)/500'
     | '/(errors)/503'
+    | '/admin/chat2link'
     | '/console/billing'
     | '/console/keys'
     | '/console/profile'
@@ -518,13 +978,51 @@ export interface FileRouteTypes {
     | '/rankings/'
     | '/setup/'
     | '/(auth)/user/reset'
+    | '/admin/chat/$chatId'
+    | '/admin/dashboard/$section'
+    | '/admin/errors/$error'
+    | '/admin/models/$section'
+    | '/admin/usage-logs/$section'
+    | '/admin/usage-logs/audit'
     | '/model/$provider/$model'
+    | '/admin/channels/'
+    | '/admin/dashboard/'
+    | '/admin/keys/'
+    | '/admin/models/'
+    | '/admin/playground/'
+    | '/admin/profile/'
+    | '/admin/redemption-codes/'
+    | '/admin/security/'
+    | '/admin/subscriptions/'
+    | '/admin/system-info/'
+    | '/admin/system-settings/'
+    | '/admin/task-plugins/'
+    | '/admin/usage-logs/'
+    | '/admin/users/'
+    | '/admin/wallet/'
     | '/pricing/$modelId/'
+    | '/admin/system-settings/auth/$section'
+    | '/admin/system-settings/billing/$section'
+    | '/admin/system-settings/content/$section'
+    | '/admin/system-settings/models/$section'
+    | '/admin/system-settings/operations/$section'
+    | '/admin/system-settings/request-policies/$section'
+    | '/admin/system-settings/security/$section'
+    | '/admin/system-settings/site/$section'
+    | '/admin/system-settings/auth/'
+    | '/admin/system-settings/billing/'
+    | '/admin/system-settings/content/'
+    | '/admin/system-settings/models/'
+    | '/admin/system-settings/operations/'
+    | '/admin/system-settings/request-policies/'
+    | '/admin/system-settings/security/'
+    | '/admin/system-settings/site/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   authRouteRoute: typeof authRouteRouteWithChildren
+  AdminRouteRoute: typeof AdminRouteRouteWithChildren
   ConsoleRouteRoute: typeof ConsoleRouteRouteWithChildren
   AboutRoute: typeof AboutRouteWithChildren
   ChatRoute: typeof ChatRoute
@@ -573,6 +1071,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/chat': {
@@ -764,6 +1269,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutIndexRouteImport
       parentRoute: typeof AboutRoute
     }
+    '/admin/chat2link': {
+      id: '/admin/chat2link'
+      path: '/chat2link'
+      fullPath: '/admin/chat2link'
+      preLoaderRoute: typeof AdminChat2linkRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/system-settings': {
+      id: '/admin/system-settings'
+      path: '/system-settings'
+      fullPath: '/admin/system-settings'
+      preLoaderRoute: typeof AdminSystemSettingsRouteRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/console/billing': {
       id: '/console/billing'
       path: '/billing'
@@ -834,6 +1353,153 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authUserResetRouteImport
       parentRoute: typeof authRouteRoute
     }
+    '/admin/channels/': {
+      id: '/admin/channels/'
+      path: '/channels'
+      fullPath: '/admin/channels/'
+      preLoaderRoute: typeof AdminChannelsIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/chat/$chatId': {
+      id: '/admin/chat/$chatId'
+      path: '/chat/$chatId'
+      fullPath: '/admin/chat/$chatId'
+      preLoaderRoute: typeof AdminChatChatIdRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/dashboard/': {
+      id: '/admin/dashboard/'
+      path: '/dashboard'
+      fullPath: '/admin/dashboard/'
+      preLoaderRoute: typeof AdminDashboardIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/dashboard/$section': {
+      id: '/admin/dashboard/$section'
+      path: '/dashboard/$section'
+      fullPath: '/admin/dashboard/$section'
+      preLoaderRoute: typeof AdminDashboardSectionRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/errors/$error': {
+      id: '/admin/errors/$error'
+      path: '/errors/$error'
+      fullPath: '/admin/errors/$error'
+      preLoaderRoute: typeof AdminErrorsErrorRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/keys/': {
+      id: '/admin/keys/'
+      path: '/keys'
+      fullPath: '/admin/keys/'
+      preLoaderRoute: typeof AdminKeysIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/models/': {
+      id: '/admin/models/'
+      path: '/models'
+      fullPath: '/admin/models/'
+      preLoaderRoute: typeof AdminModelsIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/models/$section': {
+      id: '/admin/models/$section'
+      path: '/models/$section'
+      fullPath: '/admin/models/$section'
+      preLoaderRoute: typeof AdminModelsSectionRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/playground/': {
+      id: '/admin/playground/'
+      path: '/playground'
+      fullPath: '/admin/playground/'
+      preLoaderRoute: typeof AdminPlaygroundIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/profile/': {
+      id: '/admin/profile/'
+      path: '/profile'
+      fullPath: '/admin/profile/'
+      preLoaderRoute: typeof AdminProfileIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/redemption-codes/': {
+      id: '/admin/redemption-codes/'
+      path: '/redemption-codes'
+      fullPath: '/admin/redemption-codes/'
+      preLoaderRoute: typeof AdminRedemptionCodesIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/security/': {
+      id: '/admin/security/'
+      path: '/security'
+      fullPath: '/admin/security/'
+      preLoaderRoute: typeof AdminSecurityIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/subscriptions/': {
+      id: '/admin/subscriptions/'
+      path: '/subscriptions'
+      fullPath: '/admin/subscriptions/'
+      preLoaderRoute: typeof AdminSubscriptionsIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/system-info/': {
+      id: '/admin/system-info/'
+      path: '/system-info'
+      fullPath: '/admin/system-info/'
+      preLoaderRoute: typeof AdminSystemInfoIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/system-settings/': {
+      id: '/admin/system-settings/'
+      path: '/'
+      fullPath: '/admin/system-settings/'
+      preLoaderRoute: typeof AdminSystemSettingsIndexRouteImport
+      parentRoute: typeof AdminSystemSettingsRouteRoute
+    }
+    '/admin/task-plugins/': {
+      id: '/admin/task-plugins/'
+      path: '/task-plugins'
+      fullPath: '/admin/task-plugins/'
+      preLoaderRoute: typeof AdminTaskPluginsIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/usage-logs/': {
+      id: '/admin/usage-logs/'
+      path: '/usage-logs'
+      fullPath: '/admin/usage-logs/'
+      preLoaderRoute: typeof AdminUsageLogsIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/usage-logs/$section': {
+      id: '/admin/usage-logs/$section'
+      path: '/usage-logs/$section'
+      fullPath: '/admin/usage-logs/$section'
+      preLoaderRoute: typeof AdminUsageLogsSectionRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/usage-logs/audit': {
+      id: '/admin/usage-logs/audit'
+      path: '/usage-logs/audit'
+      fullPath: '/admin/usage-logs/audit'
+      preLoaderRoute: typeof AdminUsageLogsAuditRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/users/': {
+      id: '/admin/users/'
+      path: '/users'
+      fullPath: '/admin/users/'
+      preLoaderRoute: typeof AdminUsersIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/wallet/': {
+      id: '/admin/wallet/'
+      path: '/wallet'
+      fullPath: '/admin/wallet/'
+      preLoaderRoute: typeof AdminWalletIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/model/$provider/$model': {
       id: '/model/$provider/$model'
       path: '/model/$provider/$model'
@@ -847,6 +1513,118 @@ declare module '@tanstack/react-router' {
       fullPath: '/pricing/$modelId/'
       preLoaderRoute: typeof PricingModelIdIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/system-settings/auth/': {
+      id: '/admin/system-settings/auth/'
+      path: '/auth'
+      fullPath: '/admin/system-settings/auth/'
+      preLoaderRoute: typeof AdminSystemSettingsAuthIndexRouteImport
+      parentRoute: typeof AdminSystemSettingsRouteRoute
+    }
+    '/admin/system-settings/auth/$section': {
+      id: '/admin/system-settings/auth/$section'
+      path: '/auth/$section'
+      fullPath: '/admin/system-settings/auth/$section'
+      preLoaderRoute: typeof AdminSystemSettingsAuthSectionRouteImport
+      parentRoute: typeof AdminSystemSettingsRouteRoute
+    }
+    '/admin/system-settings/billing/': {
+      id: '/admin/system-settings/billing/'
+      path: '/billing'
+      fullPath: '/admin/system-settings/billing/'
+      preLoaderRoute: typeof AdminSystemSettingsBillingIndexRouteImport
+      parentRoute: typeof AdminSystemSettingsRouteRoute
+    }
+    '/admin/system-settings/billing/$section': {
+      id: '/admin/system-settings/billing/$section'
+      path: '/billing/$section'
+      fullPath: '/admin/system-settings/billing/$section'
+      preLoaderRoute: typeof AdminSystemSettingsBillingSectionRouteImport
+      parentRoute: typeof AdminSystemSettingsRouteRoute
+    }
+    '/admin/system-settings/content/': {
+      id: '/admin/system-settings/content/'
+      path: '/content'
+      fullPath: '/admin/system-settings/content/'
+      preLoaderRoute: typeof AdminSystemSettingsContentIndexRouteImport
+      parentRoute: typeof AdminSystemSettingsRouteRoute
+    }
+    '/admin/system-settings/content/$section': {
+      id: '/admin/system-settings/content/$section'
+      path: '/content/$section'
+      fullPath: '/admin/system-settings/content/$section'
+      preLoaderRoute: typeof AdminSystemSettingsContentSectionRouteImport
+      parentRoute: typeof AdminSystemSettingsRouteRoute
+    }
+    '/admin/system-settings/models/': {
+      id: '/admin/system-settings/models/'
+      path: '/models'
+      fullPath: '/admin/system-settings/models/'
+      preLoaderRoute: typeof AdminSystemSettingsModelsIndexRouteImport
+      parentRoute: typeof AdminSystemSettingsRouteRoute
+    }
+    '/admin/system-settings/models/$section': {
+      id: '/admin/system-settings/models/$section'
+      path: '/models/$section'
+      fullPath: '/admin/system-settings/models/$section'
+      preLoaderRoute: typeof AdminSystemSettingsModelsSectionRouteImport
+      parentRoute: typeof AdminSystemSettingsRouteRoute
+    }
+    '/admin/system-settings/operations/': {
+      id: '/admin/system-settings/operations/'
+      path: '/operations'
+      fullPath: '/admin/system-settings/operations/'
+      preLoaderRoute: typeof AdminSystemSettingsOperationsIndexRouteImport
+      parentRoute: typeof AdminSystemSettingsRouteRoute
+    }
+    '/admin/system-settings/operations/$section': {
+      id: '/admin/system-settings/operations/$section'
+      path: '/operations/$section'
+      fullPath: '/admin/system-settings/operations/$section'
+      preLoaderRoute: typeof AdminSystemSettingsOperationsSectionRouteImport
+      parentRoute: typeof AdminSystemSettingsRouteRoute
+    }
+    '/admin/system-settings/request-policies/': {
+      id: '/admin/system-settings/request-policies/'
+      path: '/request-policies'
+      fullPath: '/admin/system-settings/request-policies/'
+      preLoaderRoute: typeof AdminSystemSettingsRequestPoliciesIndexRouteImport
+      parentRoute: typeof AdminSystemSettingsRouteRoute
+    }
+    '/admin/system-settings/request-policies/$section': {
+      id: '/admin/system-settings/request-policies/$section'
+      path: '/request-policies/$section'
+      fullPath: '/admin/system-settings/request-policies/$section'
+      preLoaderRoute: typeof AdminSystemSettingsRequestPoliciesSectionRouteImport
+      parentRoute: typeof AdminSystemSettingsRouteRoute
+    }
+    '/admin/system-settings/security/': {
+      id: '/admin/system-settings/security/'
+      path: '/security'
+      fullPath: '/admin/system-settings/security/'
+      preLoaderRoute: typeof AdminSystemSettingsSecurityIndexRouteImport
+      parentRoute: typeof AdminSystemSettingsRouteRoute
+    }
+    '/admin/system-settings/security/$section': {
+      id: '/admin/system-settings/security/$section'
+      path: '/security/$section'
+      fullPath: '/admin/system-settings/security/$section'
+      preLoaderRoute: typeof AdminSystemSettingsSecuritySectionRouteImport
+      parentRoute: typeof AdminSystemSettingsRouteRoute
+    }
+    '/admin/system-settings/site/': {
+      id: '/admin/system-settings/site/'
+      path: '/site'
+      fullPath: '/admin/system-settings/site/'
+      preLoaderRoute: typeof AdminSystemSettingsSiteIndexRouteImport
+      parentRoute: typeof AdminSystemSettingsRouteRoute
+    }
+    '/admin/system-settings/site/$section': {
+      id: '/admin/system-settings/site/$section'
+      path: '/site/$section'
+      fullPath: '/admin/system-settings/site/$section'
+      preLoaderRoute: typeof AdminSystemSettingsSiteSectionRouteImport
+      parentRoute: typeof AdminSystemSettingsRouteRoute
     }
   }
 }
@@ -875,6 +1653,115 @@ const authRouteRouteChildren: authRouteRouteChildren = {
 
 const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
   authRouteRouteChildren,
+)
+
+interface AdminSystemSettingsRouteRouteChildren {
+  AdminSystemSettingsIndexRoute: typeof AdminSystemSettingsIndexRoute
+  AdminSystemSettingsAuthSectionRoute: typeof AdminSystemSettingsAuthSectionRoute
+  AdminSystemSettingsBillingSectionRoute: typeof AdminSystemSettingsBillingSectionRoute
+  AdminSystemSettingsContentSectionRoute: typeof AdminSystemSettingsContentSectionRoute
+  AdminSystemSettingsModelsSectionRoute: typeof AdminSystemSettingsModelsSectionRoute
+  AdminSystemSettingsOperationsSectionRoute: typeof AdminSystemSettingsOperationsSectionRoute
+  AdminSystemSettingsRequestPoliciesSectionRoute: typeof AdminSystemSettingsRequestPoliciesSectionRoute
+  AdminSystemSettingsSecuritySectionRoute: typeof AdminSystemSettingsSecuritySectionRoute
+  AdminSystemSettingsSiteSectionRoute: typeof AdminSystemSettingsSiteSectionRoute
+  AdminSystemSettingsAuthIndexRoute: typeof AdminSystemSettingsAuthIndexRoute
+  AdminSystemSettingsBillingIndexRoute: typeof AdminSystemSettingsBillingIndexRoute
+  AdminSystemSettingsContentIndexRoute: typeof AdminSystemSettingsContentIndexRoute
+  AdminSystemSettingsModelsIndexRoute: typeof AdminSystemSettingsModelsIndexRoute
+  AdminSystemSettingsOperationsIndexRoute: typeof AdminSystemSettingsOperationsIndexRoute
+  AdminSystemSettingsRequestPoliciesIndexRoute: typeof AdminSystemSettingsRequestPoliciesIndexRoute
+  AdminSystemSettingsSecurityIndexRoute: typeof AdminSystemSettingsSecurityIndexRoute
+  AdminSystemSettingsSiteIndexRoute: typeof AdminSystemSettingsSiteIndexRoute
+}
+
+const AdminSystemSettingsRouteRouteChildren: AdminSystemSettingsRouteRouteChildren =
+  {
+    AdminSystemSettingsIndexRoute: AdminSystemSettingsIndexRoute,
+    AdminSystemSettingsAuthSectionRoute: AdminSystemSettingsAuthSectionRoute,
+    AdminSystemSettingsBillingSectionRoute:
+      AdminSystemSettingsBillingSectionRoute,
+    AdminSystemSettingsContentSectionRoute:
+      AdminSystemSettingsContentSectionRoute,
+    AdminSystemSettingsModelsSectionRoute:
+      AdminSystemSettingsModelsSectionRoute,
+    AdminSystemSettingsOperationsSectionRoute:
+      AdminSystemSettingsOperationsSectionRoute,
+    AdminSystemSettingsRequestPoliciesSectionRoute:
+      AdminSystemSettingsRequestPoliciesSectionRoute,
+    AdminSystemSettingsSecuritySectionRoute:
+      AdminSystemSettingsSecuritySectionRoute,
+    AdminSystemSettingsSiteSectionRoute: AdminSystemSettingsSiteSectionRoute,
+    AdminSystemSettingsAuthIndexRoute: AdminSystemSettingsAuthIndexRoute,
+    AdminSystemSettingsBillingIndexRoute: AdminSystemSettingsBillingIndexRoute,
+    AdminSystemSettingsContentIndexRoute: AdminSystemSettingsContentIndexRoute,
+    AdminSystemSettingsModelsIndexRoute: AdminSystemSettingsModelsIndexRoute,
+    AdminSystemSettingsOperationsIndexRoute:
+      AdminSystemSettingsOperationsIndexRoute,
+    AdminSystemSettingsRequestPoliciesIndexRoute:
+      AdminSystemSettingsRequestPoliciesIndexRoute,
+    AdminSystemSettingsSecurityIndexRoute:
+      AdminSystemSettingsSecurityIndexRoute,
+    AdminSystemSettingsSiteIndexRoute: AdminSystemSettingsSiteIndexRoute,
+  }
+
+const AdminSystemSettingsRouteRouteWithChildren =
+  AdminSystemSettingsRouteRoute._addFileChildren(
+    AdminSystemSettingsRouteRouteChildren,
+  )
+
+interface AdminRouteRouteChildren {
+  AdminSystemSettingsRouteRoute: typeof AdminSystemSettingsRouteRouteWithChildren
+  AdminChat2linkRoute: typeof AdminChat2linkRoute
+  AdminChatChatIdRoute: typeof AdminChatChatIdRoute
+  AdminDashboardSectionRoute: typeof AdminDashboardSectionRoute
+  AdminErrorsErrorRoute: typeof AdminErrorsErrorRoute
+  AdminModelsSectionRoute: typeof AdminModelsSectionRoute
+  AdminUsageLogsSectionRoute: typeof AdminUsageLogsSectionRoute
+  AdminUsageLogsAuditRoute: typeof AdminUsageLogsAuditRoute
+  AdminChannelsIndexRoute: typeof AdminChannelsIndexRoute
+  AdminDashboardIndexRoute: typeof AdminDashboardIndexRoute
+  AdminKeysIndexRoute: typeof AdminKeysIndexRoute
+  AdminModelsIndexRoute: typeof AdminModelsIndexRoute
+  AdminPlaygroundIndexRoute: typeof AdminPlaygroundIndexRoute
+  AdminProfileIndexRoute: typeof AdminProfileIndexRoute
+  AdminRedemptionCodesIndexRoute: typeof AdminRedemptionCodesIndexRoute
+  AdminSecurityIndexRoute: typeof AdminSecurityIndexRoute
+  AdminSubscriptionsIndexRoute: typeof AdminSubscriptionsIndexRoute
+  AdminSystemInfoIndexRoute: typeof AdminSystemInfoIndexRoute
+  AdminTaskPluginsIndexRoute: typeof AdminTaskPluginsIndexRoute
+  AdminUsageLogsIndexRoute: typeof AdminUsageLogsIndexRoute
+  AdminUsersIndexRoute: typeof AdminUsersIndexRoute
+  AdminWalletIndexRoute: typeof AdminWalletIndexRoute
+}
+
+const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminSystemSettingsRouteRoute: AdminSystemSettingsRouteRouteWithChildren,
+  AdminChat2linkRoute: AdminChat2linkRoute,
+  AdminChatChatIdRoute: AdminChatChatIdRoute,
+  AdminDashboardSectionRoute: AdminDashboardSectionRoute,
+  AdminErrorsErrorRoute: AdminErrorsErrorRoute,
+  AdminModelsSectionRoute: AdminModelsSectionRoute,
+  AdminUsageLogsSectionRoute: AdminUsageLogsSectionRoute,
+  AdminUsageLogsAuditRoute: AdminUsageLogsAuditRoute,
+  AdminChannelsIndexRoute: AdminChannelsIndexRoute,
+  AdminDashboardIndexRoute: AdminDashboardIndexRoute,
+  AdminKeysIndexRoute: AdminKeysIndexRoute,
+  AdminModelsIndexRoute: AdminModelsIndexRoute,
+  AdminPlaygroundIndexRoute: AdminPlaygroundIndexRoute,
+  AdminProfileIndexRoute: AdminProfileIndexRoute,
+  AdminRedemptionCodesIndexRoute: AdminRedemptionCodesIndexRoute,
+  AdminSecurityIndexRoute: AdminSecurityIndexRoute,
+  AdminSubscriptionsIndexRoute: AdminSubscriptionsIndexRoute,
+  AdminSystemInfoIndexRoute: AdminSystemInfoIndexRoute,
+  AdminTaskPluginsIndexRoute: AdminTaskPluginsIndexRoute,
+  AdminUsageLogsIndexRoute: AdminUsageLogsIndexRoute,
+  AdminUsersIndexRoute: AdminUsersIndexRoute,
+  AdminWalletIndexRoute: AdminWalletIndexRoute,
+}
+
+const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
+  AdminRouteRouteChildren,
 )
 
 interface ConsoleRouteRouteChildren {
@@ -922,6 +1809,7 @@ const RankingsRouteWithChildren = RankingsRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   authRouteRoute: authRouteRouteWithChildren,
+  AdminRouteRoute: AdminRouteRouteWithChildren,
   ConsoleRouteRoute: ConsoleRouteRouteWithChildren,
   AboutRoute: AboutRouteWithChildren,
   ChatRoute: ChatRoute,
