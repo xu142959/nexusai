@@ -1,4 +1,4 @@
-# NexusAI 部署指南
+﻿# NexusAI 部署指南
 
 ## 架构
 
@@ -7,7 +7,7 @@
     │
     ▼
 Nginx (80/443)
-    ├── /          → 前端静态文件 (packages/new-api/web/dist)
+    ├── /          → 前端静态文件 (packages/nexusai/web/dist)
     ├── /api/      → NexusAI 后端 (127.0.0.1:3000)
     └── /v1/       → NexusAI 后端 (OpenAI 兼容接口)
 ```
@@ -15,10 +15,10 @@ Nginx (80/443)
 ## 1. 构建前端
 
 ```bash
-cd packages/new-api/web
+cd packages/nexusai/web
 npm install
 npm run build
-# 产物在 packages/new-api/web/dist/
+# 产物在 packages/nexusai/web/dist/
 ```
 
 ## 2. 部署静态文件
@@ -26,7 +26,7 @@ npm run build
 将 `dist/` 目录复制到服务器：
 
 ```bash
-rsync -avz packages/new-api/web/dist/ user@server:/var/www/nexusai/dist/
+rsync -avz packages/nexusai/web/dist/ user@server:/var/www/nexusai/dist/
 ```
 
 ## 3. 配置 Nginx
@@ -84,7 +84,7 @@ Certbot 会自动修改 Nginx 配置，添加 443 监听和 SSL 证书。
 前端品牌配置在：
 
 ```
-packages/new-api/web/src/nexusai/config/brand.ts
+packages/nexusai/web/src/nexusai/config/brand.ts
 ```
 
 ## 7. 验证清单
@@ -96,3 +96,4 @@ packages/new-api/web/src/nexusai/config/brand.ts
 - [ ] 注册/登录流程正常
 - [ ] 聊天流式响应正常（SSE）
 - [ ] HTTPS 证书有效
+

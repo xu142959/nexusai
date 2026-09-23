@@ -1,10 +1,10 @@
-version: '3.8'
+﻿version: '3.8'
 
 services:
   # NexusAI 主服务（前端 + 后端一体）
   nexusai:
     build:
-      context: ./packages/new-api
+      context: ./packages/nexusai
       dockerfile: Dockerfile
     container_name: nexusai
     restart: unless-stopped
@@ -70,3 +70,4 @@ volumes:
 networks:
   nexusai-network:
     driver: bridge
+

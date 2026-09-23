@@ -1,4 +1,4 @@
-# NexusAI
+﻿# NexusAI
 
 一站式 AI 模型接入平台，支持 500+ 模型，统一 API 接口。
 
@@ -37,7 +37,7 @@
 ### 本地开发
 
 # 1. 启动后端
-cd packages/new-api
+cd packages/nexusai
 go run main.go
 
 # 2. 启动前端（另一个终端）
@@ -78,9 +78,10 @@ docker-compose up -d --build
 
 ## 测试
 
-cd packages/new-api/web
+cd packages/nexusai/web
 npm test
 
 ## License
 
 AGPL-3.0
+
