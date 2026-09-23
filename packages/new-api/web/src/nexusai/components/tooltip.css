@@ -1,0 +1,106 @@
+/* ========== StoryNest Tooltip ========== */
+
+.snt-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.snt-tooltip {
+  position: absolute;
+  z-index: 1000;
+  padding: 6px 12px;
+  background: rgba(10, 15, 20, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(252, 252, 254, 0.9);
+  white-space: nowrap;
+  pointer-events: none;
+  animation: snt-fade-in 0.15s ease-out;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes snt-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 位置 */
+.snt-top {
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.snt-bottom {
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.snt-left {
+  right: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.snt-right {
+  left: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* 箭头 */
+.snt-arrow {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: rgba(10, 15, 20, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transform: rotate(45deg);
+}
+
+.snt-top .snt-arrow {
+  top: 100%;
+  left: 50%;
+  margin-left: -4px;
+  margin-top: -4px;
+  border-top: none;
+  border-left: none;
+}
+
+.snt-bottom .snt-arrow {
+  bottom: 100%;
+  left: 50%;
+  margin-left: -4px;
+  margin-bottom: -4px;
+  border-bottom: none;
+  border-right: none;
+}
+
+.snt-left .snt-arrow {
+  left: 100%;
+  top: 50%;
+  margin-top: -4px;
+  margin-left: -4px;
+  border-top: none;
+  border-right: none;
+}
+
+.snt-right .snt-arrow {
+  right: 100%;
+  top: 50%;
+  margin-top: -4px;
+  margin-right: -4px;
+  border-bottom: none;
+  border-left: none;
+}

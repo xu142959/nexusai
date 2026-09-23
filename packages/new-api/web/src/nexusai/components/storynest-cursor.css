@@ -1,0 +1,49 @@
+/* StoryNest 自定义光标 */
+.storynest-cursor-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.storynest-cursor-dot {
+  position: fixed;
+  top: -4px;
+  left: -4px;
+  width: 8px;
+  height: 8px;
+  background: #c8ff00;
+  border-radius: 50%;
+  pointer-events: none;
+  transition: transform 0.05s ease-out;
+  box-shadow: 0 0 10px rgba(200, 255, 0, 0.5);
+}
+
+.storynest-cursor-ring {
+  position: fixed;
+  top: -18px;
+  left: -18px;
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid rgba(200, 255, 0, 0.45);
+  border-radius: 50%;
+  pointer-events: none;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+/* hover 可点击元素时放大 - 使用 transform 避免布局抖动 */
+.storynest-cursor-ring.hover {
+  transform: scale(1.33);
+  border-color: rgba(200, 255, 0, 0.7);
+}
+
+@media (max-width: 768px) {
+  .storynest-cursor-layer {
+    display: none;
+  }
+}

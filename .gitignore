@@ -1,0 +1,70 @@
+# Dependencies
+node_modules/
+packages/client/node_modules/
+packages/new-api/web/node_modules/
+
+# Build output
+dist/
+packages/client/dist/
+packages/new-api/web/dist/
+build/
+
+# Go binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+server
+packages/server-go/server
+packages/server-go/server.exe
+packages/server-go/seed
+packages/server-go/seed.exe
+packages/new-api/new-api
+packages/new-api/new-api.exe
+
+# New API data
+packages/new-api/data/
+packages/new-api/logs/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
+coverage/
+.nyc_output/
+
+# Docker
+docker-compose.override.yml
+
+# Lark CLI draft workspaces
+draft_*/
+
+# Build/dev scratch logs
+vite-err.txt
+vite-out.txt
+rsbuild-err.txt
+rsbuild-out.txt
+dev-error.log
+dev.log
+
+# Backup files
+*.bak

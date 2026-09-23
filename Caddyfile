@@ -1,0 +1,6 @@
+:80 {
+    root * /srv
+    file_server
+    reverse_proxy /api/* server:8080
+    try_files {path} /index.html
+}
