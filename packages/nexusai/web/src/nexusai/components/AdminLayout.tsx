@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { Link, useRouter } from '@tanstack/react-router'
 import {
   LayoutDashboard,
@@ -84,11 +84,6 @@ export function AdminLayout({ children, title }: AdminLayoutProps) {
       <div className="admin-main">
         <header className="admin-header">
           <h1 className="admin-title">{title}</h1>
-          <div className="admin-header-right">
-            <Link to="/" className="admin-back-link">
-              ← 返回前台
-            </Link>
-          </div>
         </header>
 
         <main className="admin-content">{children}</main>
@@ -96,3 +91,4 @@ export function AdminLayout({ children, title }: AdminLayoutProps) {
     </div>
   )
 }
+

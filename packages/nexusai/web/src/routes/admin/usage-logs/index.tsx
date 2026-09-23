@@ -1,30 +1,15 @@
-/*
-Copyright (C) 2023-2026 QuantumNous
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as
-published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with this program. If not, see <https://www.gnu.org/licenses/>.
-
-For commercial licensing, please contact support@quantumnous.com
-*/
-import { createFileRoute, redirect } from '@tanstack/react-router'
-
-import { USAGE_LOGS_DEFAULT_SECTION } from '@/features/usage-logs/section-registry'
+﻿import { createFileRoute, redirect } from '@tanstack/react-router'
+import { AdminLogs } from '@/nexusai'
+import { resolveAuthentication } from '@/lib/auth-session'
+import { useAuthStore } from '@/stores/auth-store'
 
 export const Route = createFileRoute('/admin/usage-logs/')({
-  beforeLoad: () => {
-    throw redirect({
-      to: '/admin/usage-logs/$section',
-      params: { section: USAGE_LOGS_DEFAULT_SECTION },
-    })
+  beforeLoad: async () => {
+    await resolveAuthentication()
+    const { auth } = useAuthStore.getState()
+    if (!auth.user) {
+      throw redirect({ to: '/sign-in' })
+    }
   },
+  component: AdminLogs,
 })

@@ -34,3 +34,8 @@ export { AdminLayout } from './components/AdminLayout'
 export { AdminDashboard } from './pages/admin/AdminDashboard'
 export { AdminChannels } from './pages/admin/AdminChannels'
 export { AdminUsers } from './pages/admin/AdminUsers'
+export { AdminModels } from './pages/admin/AdminModels'
+export { AdminKeys } from './pages/admin/AdminKeys'
+export { AdminLogs } from './pages/admin/AdminLogs'
+export { AdminSettings } from './pages/admin/AdminSettings'
+
