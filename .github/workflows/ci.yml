@@ -44,6 +44,10 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version-file: packages/nexusai/go.mod
+          cache-dependency-path: packages/nexusai/go.sum
+
+      - name: Prepare frontend embed placeholder
+        run: mkdir -p web/dist && printf '<!doctype html><html><body>CI placeholder</body></html>' > web/dist/index.html
 
       - name: Build
         run: go build -o nexusai .
