@@ -1,4 +1,4 @@
-﻿import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Link, useRouter } from '@tanstack/react-router'
 import { motion, AnimatePresence } from 'motion/react'
 import {
@@ -26,8 +26,12 @@ export function StoryNestUserMenu() {
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
-  const { auth } = useAuthStore()
-  const isAuthed = !!auth.user
+  // Selector subscription. Without a selector, this subscribes to the entire
+  // auth-store and re-renders on every setBundle / setUser / setBootstrapState
+  // call anywhere in the app — which combined with the backdrop-filter blur
+  // animation below was a major source of UI jank on the console.
+  const user = useAuthStore((s) => s.auth.user)
+  const isAuthed = !!user
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -70,7 +74,7 @@ export function StoryNestUserMenu() {
         <div className="storynest-user-menu-avatar">
           <User size={16} />
         </div>
-        <span className="storynest-user-menu-name">Personal</span>
+        <span className="storynest-user-menu-name">{user?.display_name || user?.username || '我的'}</span>
         <motion.div
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
@@ -94,8 +98,8 @@ export function StoryNestUserMenu() {
                 <User size={24} />
               </div>
               <div className="storynest-user-menu-info">
-                <div className="storynest-user-menu-username">个人账号</div>
-                <div className="storynest-user-menu-email">user@nexusai.com</div>
+                <div className="storynest-user-menu-username">{user?.display_name || user?.username || '用户'}</div>
+              <div className="storynest-user-menu-email">{user?.email || ''}</div>
               </div>
             </div>
 

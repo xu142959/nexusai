@@ -95,6 +95,9 @@ export const useSystemConfigStore = create<SystemConfigState>()(
     }),
     {
       name: 'system-config-storage',
+      // `loading` is ephemeral — flushing it to localStorage on every toggle
+      // caused noticeable jank when navigating around. Drop it from the
+      // serialized slice.
       partialize: (state) => ({
         config: state.config,
         loadedLogoUrl: state.loadedLogoUrl,

@@ -19,7 +19,7 @@ export function NexusFooter() {
               </svg>
               <span className="text-xl font-semibold text-white tracking-tight">{BRAND.shortName}</span>
             </Link>
-            <p className="text-sm text-white/50 leading-relaxed max-w-xs">{BRAND.tagline}</p>
+            <p className="text-sm text-white/50 leading-relaxed max-w-xs">统一接入 500+ AI 模型，更优价格，更稳可用</p>
           </div>
 
           {/* 产品 */}

@@ -106,7 +106,7 @@ function getSystemSettingsNavGroups(t: TFunction): NavGroup[] {
  */
 export const SYSTEM_SETTINGS_VIEW: SidebarView = {
   id: 'system-settings',
-  pathPattern: /^\/system-settings(\/|$)/,
+  pathPattern: /^\/admin\/system-settings(\/|$)/,
   parent: {
     to: '/admin/dashboard/overview',
     label: 'Back to Dashboard',

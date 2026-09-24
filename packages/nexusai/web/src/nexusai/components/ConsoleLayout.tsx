@@ -1,15 +1,17 @@
 import { Outlet, Link, useLocation } from '@tanstack/react-router'
 import { BRAND } from '../config/brand'
 import { StoryNestNav } from './StoryNestNav'
-import { StoryNestCursor } from './StoryNestCursor'
 import './storynest-global.css'
 import './storynest-ui.css'
-import { KeyRound, BarChart3, User, Wallet, Settings, SlidersHorizontal, ChevronRight } from 'lucide-react'
+import { KeyRound, BarChart3, User, Wallet, Settings, SlidersHorizontal, ChevronRight, LayoutDashboard, BookOpen, Receipt } from 'lucide-react'
 
 const navItems = [
+  { to: '/console', label: '概览', icon: LayoutDashboard },
   { to: '/console/keys', label: 'API 密钥', icon: KeyRound },
   { to: '/console/usage', label: '用量统计', icon: BarChart3 },
-  { to: '/console/billing', label: '充值账单', icon: Wallet },
+  { to: '/console/wallet', label: '钱包', icon: Wallet },
+  { to: '/console/billing', label: '充值账单', icon: Receipt },
+  { to: '/console/quickstart', label: '接入指南', icon: BookOpen },
   { to: '/console/profile', label: '个人资料', icon: User },
   { to: '/console/settings', label: '偏好设置', icon: SlidersHorizontal },
 ]
@@ -18,7 +20,8 @@ export function ConsoleLayout() {
   const location = useLocation()
 
   return (
-    <div className="storynest-global min-h-screen bg-[#03080a]" style={{ fontFamily: `Inter Tight, -apple-system, sans-serif` }}>`n      <StoryNestNav />
+    <div className="storynest-global min-h-screen bg-[#03080a]" style={{ fontFamily: `Inter Tight, -apple-system, sans-serif` }}>
+      <StoryNestNav />
       <div className="max-w-[1880px] mx-auto px-6 py-8 pt-24">
         <div className="flex flex-col md:flex-row gap-8">
           {/* 侧边栏 */}

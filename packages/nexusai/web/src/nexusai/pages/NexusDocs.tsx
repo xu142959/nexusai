@@ -1,81 +1,10 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { SNPageHeader } from '../components/StoryNestUI';
 import { motion } from 'motion/react'
 import {
   BookOpen, Code2, Terminal, KeyRound, MessageSquare,
   Copy, Check, ChevronRight, AlertCircle, Zap, Shield,
 } from 'lucide-react'
-
-const codeExamples = {
-  curl: `curl https://api.nexusai.com/v1/chat/completions \\
-  -H "Authorization: Bearer $API_KEY" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "model": "gpt-4o",
-    "messages": [
-      {"role": "system", "content": "你是一个有用的助手"},
-      {"role": "user", "content": "你好！"}
-    ],
-    "stream": true
-  }'`,
-  python: `from openai import OpenAI
-
-client = OpenAI(
-    api_key="your-api-key",
-    base_url="https://api.nexusai.com/v1"
-)
-
-# 流式对话
-stream = client.chat.completions.create(
-    model="gpt-4o",
-    messages=[{"role": "user", "content": "你好！"}],
-    stream=True,
-)
-for chunk in stream:
-    print(chunk.choices[0].delta.content or "", end="")`,
-  nodejs: `import OpenAI from 'openai'
-
-const client = new OpenAI({
-  apiKey: process.env.API_KEY,
-  baseURL: 'https://api.nexusai.com/v1',
-})
-
-// 流式对话
-const stream = await client.chat.completions.create({
-  model: 'gpt-4o',
-  messages: [{ role: 'user', content: '你好！' }],
-  stream: true,
-})
-for await (const chunk of stream) {
-  process.stdout.write(chunk.choices[0]?.delta?.content || '')
-}`,
-  go: `package main
-
-import (
-    "context"
-    "fmt"
-    openai "github.com/sashabaranov/go-openai"
-)
-
-func main() {
-    client := openai.NewClientWithConfig(openai.DefaultConfig("your-api-key"))
-    client.BaseURL = "https://api.nexusai.com/v1"
-
-    resp, err := client.CreateChatCompletion(
-        context.Background(),
-        openai.ChatCompletionRequest{
-            Model: "gpt-4o",
-            Messages: []openai.ChatCompletionMessage{
-                {Role: openai.ChatMessageRoleUser, Content: "你好！"},
-            },
-        },
-    )
-    if err != nil {
-        panic(err)
-    }
-    fmt.Println(resp.Choices[0].Message.Content)
-}`,
-}
 
 const endpoints = [
   { method: 'POST', path: '/v1/chat/completions', desc: '聊天补全（支持流式）' },
@@ -95,6 +24,78 @@ const errorCodes = [
 ]
 
 export function NexusDocs() {
+  const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
+  const codeExamples = useMemo(() => ({
+    curl: `curl ${baseUrl}/v1/chat/completions \\
+  -H "Authorization: Bearer $API_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "model": "gpt-4o",
+    "messages": [
+      {"role": "system", "content": "你是一个有用的助手"},
+      {"role": "user", "content": "你好！"}
+    ],
+    "stream": true
+  }'`,
+    python: `from openai import OpenAI
+
+client = OpenAI(
+    api_key="your-api-key",
+    base_url="${baseUrl}/v1"
+)
+
+# 流式对话
+stream = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[{"role": "user", "content": "你好！"}],
+    stream=True,
+)
+for chunk in stream:
+    print(chunk.choices[0].delta.content or "", end="")`,
+    nodejs: `import OpenAI from 'openai'
+
+const client = new OpenAI({
+  apiKey: process.env.API_KEY,
+  baseURL: '${baseUrl}/v1',
+})
+
+// 流式对话
+const stream = await client.chat.completions.create({
+  model: 'gpt-4o',
+  messages: [{ role: 'user', content: '你好！' }],
+  stream: true,
+})
+for await (const chunk of stream) {
+  process.stdout.write(chunk.choices[0]?.delta?.content || '')
+}`,
+    go: `package main
+
+import (
+    "context"
+    "fmt"
+    openai "github.com/sashabaranov/go-openai"
+)
+
+func main() {
+    client := openai.NewClientWithConfig(openai.DefaultConfig("your-api-key"))
+    client.BaseURL = "${baseUrl}/v1"
+
+    resp, err := client.CreateChatCompletion(
+        context.Background(),
+        openai.ChatCompletionRequest{
+            Model: "gpt-4o",
+            Messages: []openai.ChatCompletionMessage{
+                {Role: openai.ChatMessageRoleUser, Content: "你好！"},
+            },
+        },
+    )
+    if err != nil {
+        panic(err)
+    }
+    fmt.Println(resp.Choices[0].Message.Content)
+}`,
+  }), [baseUrl])
+
   const [activeTab, setActiveTab] = useState<keyof typeof codeExamples>('curl')
   const [copied, setCopied] = useState(false)
   const [activeSection, setActiveSection] = useState('quickstart')
@@ -289,7 +290,7 @@ export function NexusDocs() {
               >
                 <h2 className="text-xl font-bold text-white">API 端点</h2>
                 <p className="text-gray-400 text-sm">
-                  Base URL: <code className="text-[#c8ff00]">https://api.nexusai.com/v1</code>
+                  Base URL: <code className="text-[#c8ff00]">{baseUrl}/v1</code>
                 </p>
 
                 <div className="space-y-2">

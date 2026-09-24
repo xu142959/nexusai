@@ -1,28 +1,23 @@
 import { motion } from 'motion/react'
+import { useEffect, useState } from 'react'
 import { SNPageHeader } from '../components/StoryNestUI';
 import {
   Target, Eye, Users, Globe, Zap, Shield, Heart,
-  Globe, Link, Mail,
+  Link, Mail,
 } from 'lucide-react'
-import { Link } from '@tanstack/react-router'
-
-const stats = [
-  { value: '500+', label: 'AI 模型' },
-  { value: '80+', label: '提供商' },
-  { value: '99.99%', label: '可用性' },
-  { value: '400T+', label: '月 Token 量' },
-]
+import { Link as RouterLink } from '@tanstack/react-router'
+import { api } from '@/lib/api'
 
 const values = [
   {
     icon: Zap,
     title: '极致性能',
-    desc: '全球多区域部署，低延迟高可用，让 AI 调用更快更稳定。',
+    desc: '智能路由优化，低延迟高可用，让 AI 调用更快更稳定。',
   },
   {
     icon: Shield,
     title: '安全可靠',
-    desc: '企业级加密传输，不存储用户数据，保护您的隐私安全。',
+    desc: '企业级加密传输，审计日志，保护您的隐私安全。',
   },
   {
     icon: Globe,
@@ -32,17 +27,35 @@ const values = [
   {
     icon: Heart,
     title: '用户至上',
-    desc: '透明定价，按量计费，无隐藏费用，永久免费额度。',
+    desc: '透明定价，按量计费，无隐藏费用。',
   },
 ]
 
-const team = [
-  { name: '创始人', role: 'CEO & 产品', initial: 'N' },
-  { name: '技术负责人', role: 'CTO & 架构', initial: 'A' },
-  { name: '运营负责人', role: 'COO & 增长', initial: 'I' },
-]
-
 export function NexusAbout() {
+  const [modelCount, setModelCount] = useState(0)
+  const [providerCount, setProviderCount] = useState(0)
+  const [version, setVersion] = useState('v1.0')
+
+  useEffect(() => {
+    api.get('/api/pricing').then((res) => {
+      const data = res.data?.data || []
+      setModelCount(data.length)
+      const providers = new Set<string>()
+      data.forEach((m: any) => { if (m.provider_name) providers.add(m.provider_name) })
+      setProviderCount(providers.size)
+    }).catch(() => {})
+    api.get('/api/status').then((res) => {
+      const v = res.data?.data?.version
+      if (v) setVersion(v)
+    }).catch(() => {})
+  }, [])
+
+  const stats = [
+    { value: `${modelCount}`, label: '可用模型' },
+    { value: `${providerCount}`, label: '提供商' },
+    { value: version, label: '当前版本' },
+    { value: 'OpenAI', label: '兼容协议' },
+  ]
   return (
     <div className="min-h-screen bg-[#03080a] text-[#fcfcfe]">
       {/* Hero */}
@@ -127,43 +140,24 @@ export function NexusAbout() {
         </div>
       </section>
 
-      {/* 团队 */}
-      <section className="py-16 px-6">
-        <div className="max-w-[1880px] mx-auto text-center">
-          <h2 className="text-2xl font-bold text-white mb-2">核心团队</h2>
-          <p className="text-gray-500 mb-10">来自全球顶尖科技公司的工程师和产品专家</p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {team.map((member, i) => (
-              <div key={i} className="bg-white/[0.03] border border-white/5 rounded-xl p-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#c8ff00] to-[#8fcc00] rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl font-bold text-black">{member.initial}</span>
-                </div>
-                <h3 className="font-semibold text-white">{member.name}</h3>
-                <p className="text-sm text-gray-500 mt-1">{member.role}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* CTA */}
       <section className="py-16 px-6">
         <div className="max-w-[1880px] mx-auto text-center bg-gradient-to-br from-[#c8ff00]/10 to-transparent border border-[#c8ff00]/20 rounded-2xl p-10">
           <h2 className="text-2xl font-bold text-white mb-3">加入我们</h2>
           <p className="text-gray-400 mb-6">无论您是开发者还是企业用户，NexusAI 都能为您提供最优质的 AI 服务</p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Link
+            <RouterLink
               to="/sign-up"
               className="bg-[#c8ff00] text-black px-8 py-3 rounded-xl font-semibold hover:bg-[#d4ff33] transition-colors"
             >
               免费注册
-            </Link>
-            <Link
+            </RouterLink>
+            <RouterLink
               to="/docs"
               className="border border-white/20 text-white px-8 py-3 rounded-xl font-semibold hover:bg-white/5 transition-colors"
             >
               查看文档
-            </Link>
+            </RouterLink>
           </div>
         </div>
       </section>

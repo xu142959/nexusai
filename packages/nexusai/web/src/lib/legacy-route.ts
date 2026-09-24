@@ -19,34 +19,34 @@ For commercial licensing, please contact support@quantumnous.com
 const legacyOrigin = 'https://legacy-route.invalid'
 
 const legacyConsoleRoutes: Record<string, string> = {
-  '/console': '/dashboard',
-  '/console/models': '/models',
-  '/console/deployment': '/models/deployments',
-  '/console/subscription': '/subscriptions',
-  '/console/channel': '/channels',
-  '/console/token': '/keys',
-  '/console/playground': '/playground',
-  '/console/redemption': '/redemption-codes',
-  '/console/user': '/users',
-  '/console/personal': '/profile',
-  '/console/log': '/usage-logs',
-  '/console/midjourney': '/usage-logs/drawing',
-  '/console/task': '/usage-logs/task',
+  '/console': '/admin/dashboard',
+  '/console/models': '/admin/models/metadata',
+  '/console/deployment': '/admin/models/deployments',
+  '/console/subscription': '/admin/subscriptions',
+  '/console/channel': '/admin/channels',
+  '/console/token': '/admin/keys',
+  '/console/playground': '/admin/playground',
+  '/console/redemption': '/admin/redemption-codes',
+  '/console/user': '/admin/users',
+  '/console/personal': '/admin/profile',
+  '/console/log': '/admin/usage-logs/common',
+  '/console/midjourney': '/admin/usage-logs/drawing',
+  '/console/task': '/admin/usage-logs/task',
 }
 
 const legacySettingsTabs: Record<string, string> = {
-  operation: '/system-settings/operations/behavior',
-  dashboard: '/system-settings/content/dashboard',
-  chats: '/system-settings/content/chat',
-  drawing: '/system-settings/content/drawing',
-  payment: '/system-settings/billing/payment',
-  ratio: '/system-settings/billing/model-pricing',
-  ratelimit: '/system-settings/security/rate-limit',
-  models: '/system-settings/models/global',
-  'model-deployment': '/system-settings/models/model-deployment',
-  performance: '/system-settings/operations/performance',
-  system: '/system-settings/site/system-info',
-  other: '/system-settings/site/system-info',
+  operation: '/admin/system-settings/operations/behavior',
+  dashboard: '/admin/system-settings/content/dashboard',
+  chats: '/admin/system-settings/content/chat',
+  drawing: '/admin/system-settings/content/drawing',
+  payment: '/admin/system-settings/billing/payment',
+  ratio: '/admin/system-settings/billing/model-pricing',
+  ratelimit: '/admin/system-settings/security/rate-limit',
+  models: '/admin/system-settings/models/global',
+  'model-deployment': '/admin/system-settings/models/model-deployment',
+  performance: '/admin/system-settings/operations/performance',
+  system: '/admin/system-settings/site/system-info',
+  other: '/admin/system-settings/site/system-info',
 }
 
 function normalizeLegacyPath(pathname: string): string {
@@ -64,7 +64,15 @@ function buildTargetHref(targetPath: string, source: URL): string {
 }
 
 // NexusAI 新用户端控制台路由，不做旧路由重定向
-const NEXUSAI_CONSOLE_ROUTES = ['/console/keys', '/console/usage', '/console/profile', '/console/billing', '/console/settings']
+const NEXUSAI_CONSOLE_ROUTES = [
+  '/console/keys',
+  '/console/usage',
+  '/console/profile',
+  '/console/billing',
+  '/console/settings',
+  '/console/wallet',
+  '/console/quickstart',
+]
 
 export function resolveLegacyRoute(rawHref: string): string | null {
   let source: URL
@@ -87,25 +95,25 @@ export function resolveLegacyRoute(rawHref: string): string | null {
     return buildTargetHref('/403', source)
   }
   if (pathname === '/console/topup') {
-    return buildTargetHref('/wallet', source)
+    return buildTargetHref('/admin/wallet', source)
   }
   if (pathname === '/console/setting') {
     const tab = source.searchParams.get('tab') ?? ''
-    const target = legacySettingsTabs[tab] ?? '/system-settings'
+    const target = legacySettingsTabs[tab] ?? '/admin/system-settings'
     return buildTargetHref(target, source)
   }
   if (pathname === '/console/chat') {
-    return buildTargetHref('/dashboard', source)
+    return buildTargetHref('/admin/dashboard', source)
   }
   if (pathname.startsWith('/console/chat/')) {
     const chatID = pathname.slice('/console/chat/'.length)
-    return buildTargetHref(chatID ? `/chat/${chatID}` : '/dashboard', source)
+    return buildTargetHref(chatID ? `/admin/chat/${chatID}` : '/admin/dashboard', source)
   }
 
   const target = legacyConsoleRoutes[pathname]
   if (target) return buildTargetHref(target, source)
   if (pathname.startsWith('/console/')) {
-    return buildTargetHref('/dashboard', source)
+    return buildTargetHref('/admin/dashboard', source)
   }
 
   return null

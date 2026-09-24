@@ -20,6 +20,7 @@ import { Route as HelpRouteImport } from './routes/help'
 import { Route as ModelsRouteImport } from './routes/models'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as PlansRouteImport } from './routes/plans'
+import { Route as PlaygroundRouteImport } from './routes/playground'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as QuickstartRouteImport } from './routes/quickstart'
@@ -41,12 +42,16 @@ import { Route as errors500RouteImport } from './routes/(errors)/500'
 import { Route as errors503RouteImport } from './routes/(errors)/503'
 import { Route as AboutIndexRouteImport } from './routes/about/index'
 import { Route as AdminChat2linkRouteImport } from './routes/admin/chat2link'
+import { Route as AdminSignInRouteImport } from './routes/admin/sign-in'
 import { Route as AdminSystemSettingsRouteRouteImport } from './routes/admin/system-settings/route'
+import { Route as ConsoleIndexRouteImport } from './routes/console/index'
 import { Route as ConsoleBillingRouteImport } from './routes/console/billing'
 import { Route as ConsoleKeysRouteImport } from './routes/console/keys'
 import { Route as ConsoleProfileRouteImport } from './routes/console/profile'
+import { Route as ConsoleQuickstartRouteImport } from './routes/console/quickstart'
 import { Route as ConsoleSettingsRouteImport } from './routes/console/settings'
 import { Route as ConsoleUsageRouteImport } from './routes/console/usage'
+import { Route as ConsoleWalletRouteImport } from './routes/console/wallet'
 import { Route as OauthProviderRouteImport } from './routes/oauth/$provider'
 import { Route as PricingIndexRouteImport } from './routes/pricing/index'
 import { Route as RankingsIndexRouteImport } from './routes/rankings/index'
@@ -144,6 +149,11 @@ const NotificationsRoute = NotificationsRouteImport.update({
 const PlansRoute = PlansRouteImport.update({
   id: '/plans',
   path: '/plans',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlaygroundRoute = PlaygroundRouteImport.update({
+  id: '/playground',
+  path: '/playground',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -251,12 +261,22 @@ const AdminChat2linkRoute = AdminChat2linkRouteImport.update({
   path: '/chat2link',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminSignInRoute = AdminSignInRouteImport.update({
+  id: '/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminSystemSettingsRouteRoute =
   AdminSystemSettingsRouteRouteImport.update({
     id: '/system-settings',
     path: '/system-settings',
     getParentRoute: () => AdminRouteRoute,
   } as any)
+const ConsoleIndexRoute = ConsoleIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ConsoleRouteRoute,
+} as any)
 const ConsoleBillingRoute = ConsoleBillingRouteImport.update({
   id: '/billing',
   path: '/billing',
@@ -272,6 +292,11 @@ const ConsoleProfileRoute = ConsoleProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => ConsoleRouteRoute,
 } as any)
+const ConsoleQuickstartRoute = ConsoleQuickstartRouteImport.update({
+  id: '/quickstart',
+  path: '/quickstart',
+  getParentRoute: () => ConsoleRouteRoute,
+} as any)
 const ConsoleSettingsRoute = ConsoleSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -280,6 +305,11 @@ const ConsoleSettingsRoute = ConsoleSettingsRouteImport.update({
 const ConsoleUsageRoute = ConsoleUsageRouteImport.update({
   id: '/usage',
   path: '/usage',
+  getParentRoute: () => ConsoleRouteRoute,
+} as any)
+const ConsoleWalletRoute = ConsoleWalletRouteImport.update({
+  id: '/wallet',
+  path: '/wallet',
   getParentRoute: () => ConsoleRouteRoute,
 } as any)
 const OauthProviderRoute = OauthProviderRouteImport.update({
@@ -532,6 +562,7 @@ export interface FileRoutesByFullPath {
   '/models': typeof ModelsRoute
   '/notifications': typeof NotificationsRoute
   '/plans': typeof PlansRoute
+  '/playground': typeof PlaygroundRoute
   '/privacy': typeof PrivacyRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/quickstart': typeof QuickstartRoute
@@ -553,13 +584,17 @@ export interface FileRoutesByFullPath {
   '/500': typeof errors500Route
   '/503': typeof errors503Route
   '/admin/chat2link': typeof AdminChat2linkRoute
+  '/admin/sign-in': typeof AdminSignInRoute
   '/console/billing': typeof ConsoleBillingRoute
   '/console/keys': typeof ConsoleKeysRoute
   '/console/profile': typeof ConsoleProfileRoute
+  '/console/quickstart': typeof ConsoleQuickstartRoute
   '/console/settings': typeof ConsoleSettingsRoute
   '/console/usage': typeof ConsoleUsageRoute
+  '/console/wallet': typeof ConsoleWalletRoute
   '/oauth/$provider': typeof OauthProviderRoute
   '/about/': typeof AboutIndexRoute
+  '/console/': typeof ConsoleIndexRoute
   '/pricing/': typeof PricingIndexRoute
   '/rankings/': typeof RankingsIndexRoute
   '/setup/': typeof SetupIndexRoute
@@ -607,13 +642,13 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
-  '/console': typeof ConsoleRouteRouteWithChildren
   '/chat': typeof ChatRoute
   '/docs': typeof DocsRoute
   '/help': typeof HelpRoute
   '/models': typeof ModelsRoute
   '/notifications': typeof NotificationsRoute
   '/plans': typeof PlansRoute
+  '/playground': typeof PlaygroundRoute
   '/privacy': typeof PrivacyRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/quickstart': typeof QuickstartRoute
@@ -633,13 +668,17 @@ export interface FileRoutesByTo {
   '/500': typeof errors500Route
   '/503': typeof errors503Route
   '/admin/chat2link': typeof AdminChat2linkRoute
+  '/admin/sign-in': typeof AdminSignInRoute
   '/console/billing': typeof ConsoleBillingRoute
   '/console/keys': typeof ConsoleKeysRoute
   '/console/profile': typeof ConsoleProfileRoute
+  '/console/quickstart': typeof ConsoleQuickstartRoute
   '/console/settings': typeof ConsoleSettingsRoute
   '/console/usage': typeof ConsoleUsageRoute
+  '/console/wallet': typeof ConsoleWalletRoute
   '/oauth/$provider': typeof OauthProviderRoute
   '/about': typeof AboutIndexRoute
+  '/console': typeof ConsoleIndexRoute
   '/pricing': typeof PricingIndexRoute
   '/rankings': typeof RankingsIndexRoute
   '/setup': typeof SetupIndexRoute
@@ -697,6 +736,7 @@ export interface FileRoutesById {
   '/models': typeof ModelsRoute
   '/notifications': typeof NotificationsRoute
   '/plans': typeof PlansRoute
+  '/playground': typeof PlaygroundRoute
   '/privacy': typeof PrivacyRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/quickstart': typeof QuickstartRoute
@@ -718,13 +758,17 @@ export interface FileRoutesById {
   '/(errors)/500': typeof errors500Route
   '/(errors)/503': typeof errors503Route
   '/admin/chat2link': typeof AdminChat2linkRoute
+  '/admin/sign-in': typeof AdminSignInRoute
   '/console/billing': typeof ConsoleBillingRoute
   '/console/keys': typeof ConsoleKeysRoute
   '/console/profile': typeof ConsoleProfileRoute
+  '/console/quickstart': typeof ConsoleQuickstartRoute
   '/console/settings': typeof ConsoleSettingsRoute
   '/console/usage': typeof ConsoleUsageRoute
+  '/console/wallet': typeof ConsoleWalletRoute
   '/oauth/$provider': typeof OauthProviderRoute
   '/about/': typeof AboutIndexRoute
+  '/console/': typeof ConsoleIndexRoute
   '/pricing/': typeof PricingIndexRoute
   '/rankings/': typeof RankingsIndexRoute
   '/setup/': typeof SetupIndexRoute
@@ -782,6 +826,7 @@ export interface FileRouteTypes {
     | '/models'
     | '/notifications'
     | '/plans'
+    | '/playground'
     | '/privacy'
     | '/privacy-policy'
     | '/quickstart'
@@ -803,13 +848,17 @@ export interface FileRouteTypes {
     | '/500'
     | '/503'
     | '/admin/chat2link'
+    | '/admin/sign-in'
     | '/console/billing'
     | '/console/keys'
     | '/console/profile'
+    | '/console/quickstart'
     | '/console/settings'
     | '/console/usage'
+    | '/console/wallet'
     | '/oauth/$provider'
     | '/about/'
+    | '/console/'
     | '/pricing/'
     | '/rankings/'
     | '/setup/'
@@ -857,13 +906,13 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admin'
-    | '/console'
     | '/chat'
     | '/docs'
     | '/help'
     | '/models'
     | '/notifications'
     | '/plans'
+    | '/playground'
     | '/privacy'
     | '/privacy-policy'
     | '/quickstart'
@@ -883,13 +932,17 @@ export interface FileRouteTypes {
     | '/500'
     | '/503'
     | '/admin/chat2link'
+    | '/admin/sign-in'
     | '/console/billing'
     | '/console/keys'
     | '/console/profile'
+    | '/console/quickstart'
     | '/console/settings'
     | '/console/usage'
+    | '/console/wallet'
     | '/oauth/$provider'
     | '/about'
+    | '/console'
     | '/pricing'
     | '/rankings'
     | '/setup'
@@ -946,6 +999,7 @@ export interface FileRouteTypes {
     | '/models'
     | '/notifications'
     | '/plans'
+    | '/playground'
     | '/privacy'
     | '/privacy-policy'
     | '/quickstart'
@@ -967,13 +1021,17 @@ export interface FileRouteTypes {
     | '/(errors)/500'
     | '/(errors)/503'
     | '/admin/chat2link'
+    | '/admin/sign-in'
     | '/console/billing'
     | '/console/keys'
     | '/console/profile'
+    | '/console/quickstart'
     | '/console/settings'
     | '/console/usage'
+    | '/console/wallet'
     | '/oauth/$provider'
     | '/about/'
+    | '/console/'
     | '/pricing/'
     | '/rankings/'
     | '/setup/'
@@ -1031,6 +1089,7 @@ export interface RootRouteChildren {
   ModelsRoute: typeof ModelsRoute
   NotificationsRoute: typeof NotificationsRoute
   PlansRoute: typeof PlansRoute
+  PlaygroundRoute: typeof PlaygroundRoute
   PrivacyRoute: typeof PrivacyRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   QuickstartRoute: typeof QuickstartRoute
@@ -1127,6 +1186,13 @@ declare module '@tanstack/react-router' {
       path: '/plans'
       fullPath: '/plans'
       preLoaderRoute: typeof PlansRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/playground': {
+      id: '/playground'
+      path: '/playground'
+      fullPath: '/playground'
+      preLoaderRoute: typeof PlaygroundRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -1276,12 +1342,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminChat2linkRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/sign-in': {
+      id: '/admin/sign-in'
+      path: '/sign-in'
+      fullPath: '/admin/sign-in'
+      preLoaderRoute: typeof AdminSignInRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/system-settings': {
       id: '/admin/system-settings'
       path: '/system-settings'
       fullPath: '/admin/system-settings'
       preLoaderRoute: typeof AdminSystemSettingsRouteRouteImport
       parentRoute: typeof AdminRouteRoute
+    }
+    '/console/': {
+      id: '/console/'
+      path: '/'
+      fullPath: '/console/'
+      preLoaderRoute: typeof ConsoleIndexRouteImport
+      parentRoute: typeof ConsoleRouteRoute
     }
     '/console/billing': {
       id: '/console/billing'
@@ -1304,6 +1384,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConsoleProfileRouteImport
       parentRoute: typeof ConsoleRouteRoute
     }
+    '/console/quickstart': {
+      id: '/console/quickstart'
+      path: '/quickstart'
+      fullPath: '/console/quickstart'
+      preLoaderRoute: typeof ConsoleQuickstartRouteImport
+      parentRoute: typeof ConsoleRouteRoute
+    }
     '/console/settings': {
       id: '/console/settings'
       path: '/settings'
@@ -1316,6 +1403,13 @@ declare module '@tanstack/react-router' {
       path: '/usage'
       fullPath: '/console/usage'
       preLoaderRoute: typeof ConsoleUsageRouteImport
+      parentRoute: typeof ConsoleRouteRoute
+    }
+    '/console/wallet': {
+      id: '/console/wallet'
+      path: '/wallet'
+      fullPath: '/console/wallet'
+      preLoaderRoute: typeof ConsoleWalletRouteImport
       parentRoute: typeof ConsoleRouteRoute
     }
     '/oauth/$provider': {
@@ -1713,6 +1807,7 @@ const AdminSystemSettingsRouteRouteWithChildren =
 interface AdminRouteRouteChildren {
   AdminSystemSettingsRouteRoute: typeof AdminSystemSettingsRouteRouteWithChildren
   AdminChat2linkRoute: typeof AdminChat2linkRoute
+  AdminSignInRoute: typeof AdminSignInRoute
   AdminChatChatIdRoute: typeof AdminChatChatIdRoute
   AdminDashboardSectionRoute: typeof AdminDashboardSectionRoute
   AdminErrorsErrorRoute: typeof AdminErrorsErrorRoute
@@ -1738,6 +1833,7 @@ interface AdminRouteRouteChildren {
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminSystemSettingsRouteRoute: AdminSystemSettingsRouteRouteWithChildren,
   AdminChat2linkRoute: AdminChat2linkRoute,
+  AdminSignInRoute: AdminSignInRoute,
   AdminChatChatIdRoute: AdminChatChatIdRoute,
   AdminDashboardSectionRoute: AdminDashboardSectionRoute,
   AdminErrorsErrorRoute: AdminErrorsErrorRoute,
@@ -1768,16 +1864,22 @@ interface ConsoleRouteRouteChildren {
   ConsoleBillingRoute: typeof ConsoleBillingRoute
   ConsoleKeysRoute: typeof ConsoleKeysRoute
   ConsoleProfileRoute: typeof ConsoleProfileRoute
+  ConsoleQuickstartRoute: typeof ConsoleQuickstartRoute
   ConsoleSettingsRoute: typeof ConsoleSettingsRoute
   ConsoleUsageRoute: typeof ConsoleUsageRoute
+  ConsoleWalletRoute: typeof ConsoleWalletRoute
+  ConsoleIndexRoute: typeof ConsoleIndexRoute
 }
 
 const ConsoleRouteRouteChildren: ConsoleRouteRouteChildren = {
   ConsoleBillingRoute: ConsoleBillingRoute,
   ConsoleKeysRoute: ConsoleKeysRoute,
   ConsoleProfileRoute: ConsoleProfileRoute,
+  ConsoleQuickstartRoute: ConsoleQuickstartRoute,
   ConsoleSettingsRoute: ConsoleSettingsRoute,
   ConsoleUsageRoute: ConsoleUsageRoute,
+  ConsoleWalletRoute: ConsoleWalletRoute,
+  ConsoleIndexRoute: ConsoleIndexRoute,
 }
 
 const ConsoleRouteRouteWithChildren = ConsoleRouteRoute._addFileChildren(
@@ -1818,6 +1920,7 @@ const rootRouteChildren: RootRouteChildren = {
   ModelsRoute: ModelsRoute,
   NotificationsRoute: NotificationsRoute,
   PlansRoute: PlansRoute,
+  PlaygroundRoute: PlaygroundRoute,
   PrivacyRoute: PrivacyRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   QuickstartRoute: QuickstartRoute,

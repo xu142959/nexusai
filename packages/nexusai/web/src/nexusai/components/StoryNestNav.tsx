@@ -9,7 +9,7 @@ import './storynest-nav.css'
 const navItems = [
   { label: '首页', href: '/' },
   { label: '模型', href: '/models' },
-  { label: '聊天', href: '/chat' },
+  { label: 'Playground', href: '/playground' },
   { label: '排行', href: '/rankings' },
   { label: '定价', href: '/plans' },
   { label: '文档', href: '/docs' },
@@ -52,7 +52,6 @@ export function StoryNestNav() {
               key={item.href}
               to={item.href}
               className={`storynest-nav-pill-item ${activeNav === item.label ? 'active' : ''}`}
-              onClick={() => setActiveNav(item.label)}
             >
               {item.label}
             </Link>
@@ -87,7 +86,7 @@ export function StoryNestNav() {
               key={item.href}
               to={item.href}
               className={`storynest-nav-mobile-item ${activeNav === item.label ? 'active' : ''}`}
-              onClick={() => { setActiveNav(item.label); setMobileOpen(false) }}
+              onClick={() => setMobileOpen(false)}
             >
               {item.label}
             </Link>

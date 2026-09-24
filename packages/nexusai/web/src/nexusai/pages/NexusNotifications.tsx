@@ -160,7 +160,7 @@ export function NexusNotifications() {
         ) : error ? (
           <div className="py-20">
             <SNEmptyState
-              icon={AlertCircle}
+              icon={<AlertCircle size={48} />}
               title="加载失败"
               description={error}
             />

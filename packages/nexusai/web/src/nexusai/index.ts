@@ -15,6 +15,7 @@ export { NexusDocs } from './pages/NexusDocs'
 export { NexusQuickstart } from './pages/NexusQuickstart'
 export { NexusSignIn } from './pages/NexusSignIn'
 export { NexusSignUp } from './pages/NexusSignUp'
+export { AdminSignIn } from './pages/AdminSignIn'
 export { ConsoleKeys } from './pages/console/ConsoleKeys'
 export { ConsoleUsage } from './pages/console/ConsoleUsage'
 export { ConsoleProfile } from './pages/console/ConsoleProfile'
@@ -30,6 +31,9 @@ export { NexusPrivacy } from './pages/NexusPrivacy'
 export { NexusTerms } from './pages/NexusTerms'
 export { NexusModelDetail } from './pages/NexusModelDetail'
 export { ConsoleSettings } from './pages/console/ConsoleSettings'
+export { ConsoleDashboard } from './pages/console/ConsoleDashboard'
+export { ConsoleWallet } from './pages/console/ConsoleWallet'
+export { ConsoleQuickstart } from './pages/console/ConsoleQuickstart'
 
 
 

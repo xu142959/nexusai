@@ -325,7 +325,7 @@ export function NexusPricing() {
           ) : pricingError ? (
             <div className="py-20">
               <SNEmptyState
-                icon={TrendingUp}
+                icon={<TrendingUp size={48} />}
                 title="加载失败"
                 description={pricingError}
               />
@@ -333,7 +333,7 @@ export function NexusPricing() {
           ) : filteredPricing.length === 0 ? (
             <div className="py-20">
               <SNEmptyState
-                icon={Cpu}
+                icon={<Cpu size={48} />}
                 title="暂无模型"
                 description="管理端尚未配置模型定价"
               />

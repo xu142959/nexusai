@@ -1,6 +1,6 @@
 import { Link, useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
-import { Menu, X, Search, User, LogOut } from 'lucide-react'
+import { Menu, X, Search, User, LogOut, Bell } from 'lucide-react'
 import { BRAND } from '../config/brand'
 import { getCommonHeaders, clearAuthentication } from '@/lib/api'
 
@@ -48,7 +48,7 @@ export function NexusHeader() {
                 className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
               >
                 <User size={16} />
-                <span className="text-sm">Personal</span>
+                <span className="text-sm">我的</span>
               </button>
               {userMenuOpen && (
                 <div className="absolute right-0 top-full mt-2 w-48 bg-[#0a0f12] border border-white/10 rounded-xl py-2 shadow-xl">
@@ -78,7 +78,7 @@ export function NexusHeader() {
                     onClick={handleLogout}
                     className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-white/5 flex items-center gap-2"
                   >
-                    <LogOut size={14} /> Sign Out
+                    <LogOut size={14} /> 退出登录
                   </button>
                 </div>
               )}
@@ -89,13 +89,13 @@ export function NexusHeader() {
                 to="/sign-in"
                 className="text-sm text-gray-400 hover:text-white transition-colors"
               >
-                Sign in
+                登录
               </Link>
               <Link
                 to="/sign-up"
                 className="text-sm bg-[#c8ff00] text-black px-4 py-1.5 rounded-lg font-semibold hover:bg-[#b0e600] transition-colors"
               >
-                Sign Up
+                注册
               </Link>
             </>
           )}
@@ -124,11 +124,11 @@ export function NexusHeader() {
           <div className="pt-3 border-t border-white/5">
             {isAuthed ? (
               <button onClick={handleLogout} className="text-red-400 text-sm">
-                Sign Out
+                退出登录
               </button>
             ) : (
               <Link to="/sign-in" className="text-white text-sm">
-                Sign in
+                登录
               </Link>
             )}
           </div>

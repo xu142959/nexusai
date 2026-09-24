@@ -1,4 +1,4 @@
-﻿import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect, useCallback, memo } from 'react'
 import {
   Send, Bot, User, Plus, MessageSquare, KeyRound, AlertCircle,
   Trash2, Copy, Check, Settings, X, StopCircle, RotateCcw, Pencil,
@@ -6,21 +6,125 @@ import {
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'motion/react'
 import { Link, useSearch, useRouter } from '@tanstack/react-router'
+import { useShallow } from 'zustand/shallow'
 import { api, clearAuthentication } from '@/lib/api'
 import { useChatStore, type ChatMessage } from '../store/chatStore'
 import { getApiKey, clearApiKeyCache } from '../lib/apikey'
 import { Markdown } from '../components/Markdown'
 import { BRAND } from '../config/brand'
 
+/**
+ * Renders the message list for the active conversation. Isolating this in a
+ * separate component means only it re-renders on every SSE chunk during
+ * streaming — the sidebar, header, and input area are not touched.
+ */
+const ChatMessages = memo(function ChatMessages({
+  activeConvId,
+  copiedId,
+  onCopy,
+  onPickSuggestion,
+}: {
+  activeConvId: string | null
+  copiedId: string | null
+  onCopy: (content: string, id: string) => void
+  onPickSuggestion: (s: string) => void
+}) {
+  const messages = useChatStore((s) => {
+    const conv = s.conversations.find((c) => c.id === activeConvId)
+    return conv ? conv.messages : EMPTY_MESSAGES
+  })
+  return (
+    <>
+      {messages.length === 0 && (
+        <div className="h-full flex flex-col items-center justify-center text-gray-500 py-20">
+          <div className="w-16 h-16 rounded-2xl bg-[#c8ff00]/10 flex items-center justify-center mb-4">
+            <Sparkles size={32} className="text-[#c8ff00]" />
+          </div>
+          <h2 className="text-xl font-semibold text-white mb-2">开始对话</h2>
+          <p className="text-sm text-gray-400 mb-6">选择一个模型，输入你的问题</p>
+          <div className="grid grid-cols-2 gap-2 w-full max-w-md">
+            {['解释量子计算', '写一首关于秋天的诗', '帮我优化这段代码', '推荐几本好书'].map(s => (
+              <button
+                key={s}
+                onClick={() => onPickSuggestion(s)}
+                className="text-left text-sm bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg px-4 py-3 text-gray-300 transition-colors"
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+      {messages.map((msg) => (
+        <motion.div
+          key={msg.id}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
+        >
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+            msg.role === 'user' ? 'bg-[#c8ff00] text-black' : 'bg-white/10 text-gray-300'
+          }`}>
+            {msg.role === 'user' ? <User size={16} /> : <Bot size={16} />}
+          </div>
+          <div className="max-w-[80%] group relative">
+            <div className={`rounded-2xl px-4 py-3 ${
+              msg.role === 'user'
+                ? 'bg-[#c8ff00] text-black'
+                : 'bg-white/5 text-gray-100'
+            }`}>
+              {msg.role === 'assistant' ? (
+                msg.content ? (
+                  <Markdown content={msg.content} />
+                ) : (
+                  <div className="flex items-center gap-1">
+                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '0ms' }} />
+                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '150ms' }} />
+                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '300ms' }} />
+                  </div>
+                )
+              ) : (
+                <p className="whitespace-pre-wrap text-sm">{msg.content}</p>
+              )}
+            </div>
+            {msg.content && (
+              <div className={`absolute top-2 ${msg.role === 'user' ? '-left-8' : '-right-8'} opacity-0 group-hover:opacity-100 transition-opacity flex flex-col gap-1`}>
+                <button
+                  onClick={() => onCopy(msg.content, msg.id)}
+                  className="p-1 text-gray-500 hover:text-white"
+                  title="复制"
+                >
+                  {copiedId === msg.id ? <Check size={14} className="text-green-400" /> : <Copy size={14} />}
+                </button>
+              </div>
+            )}
+          </div>
+        </motion.div>
+      ))}
+    </>
+  )
+})
+
+const EMPTY_MESSAGES: ChatMessage[] = []
+
 export function NexusChat() {
   const search = useSearch({ strict: false }) as { model?: string }
-  const {
-    conversations, activeId,
-    createConversation, deleteConversation, setActive,
-    addMessage, updateMessage, updateConversation, deleteMessage,
-  } = useChatStore()
 
-  const activeConv = conversations.find(c => c.id === activeId)
+  // Only subscribe to the action functions and activeId. Subscribing to the
+  // whole `conversations` array would re-render the parent on every SSE
+  // chunk during streaming. The actual message rendering lives in the
+  // `ChatMessages` child below, which is the only component that needs to
+  // re-render when message content changes.
+  const activeId = useChatStore((s) => s.activeId)
+  const conversations = useChatStore(useShallow((s) => s.conversations))
+  const createConversation = useChatStore((s) => s.createConversation)
+  const deleteConversation = useChatStore((s) => s.deleteConversation)
+  const setActive = useChatStore((s) => s.setActive)
+  const addMessage = useChatStore((s) => s.addMessage)
+  const updateMessage = useChatStore((s) => s.updateMessage)
+  const updateConversation = useChatStore((s) => s.updateConversation)
+
+  const activeConv = conversations.find((c) => c.id === activeId)
 
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -478,77 +582,16 @@ export function NexusChat() {
           </div>
         )}
 
-        {/* 消息列表 */}
+        {/* 消息列表 — extracted into ChatMessages so the parent does not
+            re-render on every SSE chunk during streaming. */}
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-[1880px] mx-auto p-6 space-y-6">
-            {(!activeConv || activeConv.messages.length === 0) && (
-              <div className="h-full flex flex-col items-center justify-center text-gray-500 py-20">
-                <div className="w-16 h-16 rounded-2xl bg-[#c8ff00]/10 flex items-center justify-center mb-4">
-                  <Sparkles size={32} className="text-[#c8ff00]" />
-                </div>
-                <h2 className="text-xl font-semibold text-white mb-2">开始对话</h2>
-                <p className="text-sm text-gray-400 mb-6">选择一个模型，输入你的问题</p>
-                <div className="grid grid-cols-2 gap-2 w-full max-w-md">
-                  {['解释量子计算', '写一首关于秋天的诗', '帮我优化这段代码', '推荐几本好书'].map(s => (
-                    <button
-                      key={s}
-                      onClick={() => setInput(s)}
-                      className="text-left text-sm bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg px-4 py-3 text-gray-300 transition-colors"
-                    >
-                      {s}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {activeConv?.messages.map((msg, i) => (
-              <motion.div
-                key={msg.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
-              >
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                  msg.role === 'user' ? 'bg-[#c8ff00] text-black' : 'bg-white/10 text-gray-300'
-                }`}>
-                  {msg.role === 'user' ? <User size={16} /> : <Bot size={16} />}
-                </div>
-                <div className={`max-w-[80%] group relative`}>
-                  <div className={`rounded-2xl px-4 py-3 ${
-                    msg.role === 'user'
-                      ? 'bg-[#c8ff00] text-black'
-                      : 'bg-white/5 text-gray-100'
-                  }`}>
-                    {msg.role === 'assistant' ? (
-                      msg.content ? (
-                        <Markdown content={msg.content} />
-                      ) : (
-                        <div className="flex items-center gap-1">
-                          <span className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '0ms' }} />
-                          <span className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '150ms' }} />
-                          <span className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '300ms' }} />
-                        </div>
-                      )
-                    ) : (
-                      <p className="whitespace-pre-wrap text-sm">{msg.content}</p>
-                    )}
-                  </div>
-                  {/* 消息操作 */}
-                  {msg.content && (
-                    <div className={`absolute top-2 ${msg.role === 'user' ? '-left-8' : '-right-8'} opacity-0 group-hover:opacity-100 transition-opacity flex flex-col gap-1`}>
-                      <button
-                        onClick={() => copyMessage(msg.content, msg.id)}
-                        className="p-1 text-gray-500 hover:text-white"
-                        title="复制"
-                      >
-                        {copiedId === msg.id ? <Check size={14} className="text-green-400" /> : <Copy size={14} />}
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-            ))}
+            <ChatMessages
+              activeConvId={activeConv?.id ?? null}
+              copiedId={copiedId}
+              onCopy={copyMessage}
+              onPickSuggestion={setInput}
+            />
             <div ref={endRef} />
           </div>
         </div>

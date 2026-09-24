@@ -8,7 +8,11 @@ export const Route = createFileRoute('/admin')({
     await resolveAuthentication()
     const { auth } = useAuthStore.getState()
     if (!auth.user) {
-      throw redirect({ to: '/sign-in' })
+      throw redirect({ to: '/admin/sign-in' })
+    }
+    if (auth.user.role < 100) {
+      // 普通用户不能进管理端
+      throw redirect({ to: '/admin/sign-in' })
     }
   },
   component: AuthenticatedLayout,

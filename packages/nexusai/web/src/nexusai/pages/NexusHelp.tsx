@@ -17,7 +17,7 @@ const faqs: FAQItem[] = [
   {
     category: '入门',
     question: '如何开始使用 NexusAI？',
-    answer: '注册账号后，前往控制台创建 API Key，然后使用该 Key 调用我们的 API 接口。支持 OpenAI 兼容格式，可直接替换 base_url 为 https://api.nexusai.com/v1。',
+    answer: '注册账号后，前往控制台创建 API Key，然后使用该 Key 调用我们的 API 接口。支持 OpenAI 兼容格式，base_url 填当前站点地址 + /v1 即可。',
   },
   {
     category: '入门',

@@ -8,49 +8,6 @@ import {
 import { api } from '@/lib/api'
 import { Markdown } from '../components/Markdown'
 
-const codeExamples = [
-  {
-    lang: 'cURL',
-    code: (model: string) => `curl https://api.nexusai.com/v1/chat/completions \\
-  -H "Authorization: Bearer $API_KEY" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "model": "${model}",
-    "messages": [{"role": "user", "content": "你好！"}]
-  }'`,
-  },
-  {
-    lang: 'Python',
-    code: (model: string) => `from openai import OpenAI
-
-client = OpenAI(
-    api_key="your-api-key",
-    base_url="https://api.nexusai.com/v1"
-)
-
-response = client.chat.completions.create(
-    model="${model}",
-    messages=[{"role": "user", "content": "你好！"}]
-)
-print(response.choices[0].message.content)`,
-  },
-  {
-    lang: 'Node.js',
-    code: (model: string) => `import OpenAI from 'openai'
-
-const client = new OpenAI({
-  apiKey: process.env.API_KEY,
-  baseURL: 'https://api.nexusai.com/v1',
-})
-
-const response = await client.chat.completions.create({
-  model: '${model}',
-  messages: [{ role: 'user', content: '你好！' }],
-})
-console.log(response.choices[0].message.content)`,
-  },
-]
-
 const capabilityLabels: Record<string, string> = {
   chat: '对话',
   completion: '补全',
@@ -67,6 +24,51 @@ export function NexusModelDetail() {
   const params = useParams({ strict: false }) as { provider?: string; model?: string }
   const router = useRouter()
   const modelName = params.model ? `${params.provider}/${params.model}` : params.provider || ''
+  const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
+
+  const codeExamples = [
+    {
+      lang: 'cURL',
+      code: (model: string) => `curl ${baseUrl}/v1/chat/completions \\
+  -H "Authorization: Bearer $API_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "model": "${model}",
+    "messages": [{"role": "user", "content": "你好！"}]
+  }'`,
+    },
+    {
+      lang: 'Python',
+      code: (model: string) => `from openai import OpenAI
+
+client = OpenAI(
+    api_key="your-api-key",
+    base_url="${baseUrl}/v1"
+)
+
+response = client.chat.completions.create(
+    model="${model}",
+    messages=[{"role": "user", "content": "你好！"}]
+)
+print(response.choices[0].message.content)`,
+    },
+    {
+      lang: 'Node.js',
+      code: (model: string) => `import OpenAI from 'openai'
+
+const client = new OpenAI({
+  apiKey: process.env.API_KEY,
+  baseURL: '${baseUrl}/v1',
+})
+
+const response = await client.chat.completions.create({
+  model: '${model}',
+  messages: [{ role: 'user', content: '你好！' }],
+})
+console.log(response.choices[0].message.content)`,
+    },
+  ]
+
   const [activeTab, setActiveTab] = useState(0)
   const [copied, setCopied] = useState(false)
   const [loading, setLoading] = useState(true)

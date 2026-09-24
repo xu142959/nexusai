@@ -1,6 +1,49 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { persist, createJSONStorage } from 'zustand/middleware'
 import { nanoid } from 'nanoid'
+
+// Debounced storage: zustand persist fires write on every state change.
+// During SSE streaming, that means hundreds of synchronous JSON.stringify +
+// localStorage.setItem per response — which blocks the main thread for tens
+// to hundreds of milliseconds per chunk and is the main cause of the user-
+// facing freeze, especially on the chat page.
+const debouncedStorage = createJSONStorage(() => ({
+  getItem: (name) => {
+    try {
+      return localStorage.getItem(name)
+    } catch {
+      return null
+    }
+  },
+  setItem: (name, value) => {
+    // Defer the write to next idle tick; coalesce multiple writes in the same
+    // tick into one localStorage.setItem call.
+    scheduleWrite(name, value)
+  },
+  removeItem: (name) => {
+    try {
+      localStorage.removeItem(name)
+    } catch {}
+  },
+}))
+
+const pendingWrites = new Map<string, string>()
+let writeHandle = 0
+function scheduleWrite(name: string, value: string) {
+  pendingWrites.set(name, value)
+  if (writeHandle) return
+  writeHandle = (typeof window !== 'undefined'
+    ? window.setTimeout
+    : setTimeout)(() => {
+    writeHandle = 0
+    for (const [k, v] of pendingWrites) {
+      try {
+        localStorage.setItem(k, v)
+      } catch {}
+    }
+    pendingWrites.clear()
+  }, 500) as unknown as number
+}
 
 export interface ChatMessage {
   id: string
@@ -122,6 +165,11 @@ export const useChatStore = create<ChatState>()(
     }),
     {
       name: 'nexusai-chat',
+      storage: debouncedStorage,
+      partialize: (state) => ({
+        conversations: state.conversations,
+        activeId: state.activeId,
+      }),
     }
   )
 )

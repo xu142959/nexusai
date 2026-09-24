@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { SNPageHeader, SNCard, SNBadge, SNButton, SNStatCard } from '../../components/StoryNestUI';
 import { motion } from 'motion/react'
-import { BarChart3, TrendingUp, Clock, Zap, DollarSign } from 'lucide-react'
+import { BarChart3, TrendingUp, Clock, Zap, DollarSign, Search, Filter, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react'
 import { api } from '@/lib/api'
 import { toast } from 'sonner'
 
@@ -13,25 +13,55 @@ interface LogItem {
   completion_tokens: number
   quota: number
   type: number
+  content?: string
+  token_name?: string
+  user_id?: number
+  channel_id?: number
+  ip?: string
+  duration?: number
+  other?: string
 }
 
 export function ConsoleUsage() {
   const [logs, setLogs] = useState<LogItem[]>([])
   const [loading, setLoading] = useState(true)
   const [quota, setQuota] = useState({ used: 0, total: 0 })
-  const [timeRange, setTimeRange] = useState(7)
+  const [page, setPage] = useState(1)
+  const [pageSize] = useState(20)
+  const [total, setTotal] = useState(0)
+  const [modelFilter, setModelFilter] = useState('')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [refreshing, setRefreshing] = useState(false)
+
+  const loadLogs = async (p: number = page) => {
+    setLoading(true)
+    try {
+      const params: any = { p, page_size: pageSize }
+      if (modelFilter) params.model_name = modelFilter
+      const logRes = await api.get('/api/log/self', { params })
+      const data = logRes.data?.data
+      if (data?.items) {
+        setLogs(data.items)
+        setTotal(data.total || data.items.length)
+      } else if (Array.isArray(data)) {
+        setLogs(data)
+        setTotal(data.length)
+      } else {
+        setLogs([])
+        setTotal(0)
+      }
+    } catch (e: any) {
+      toast.error('加载调用日志失败')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
     const load = async () => {
       setLoading(true)
       try {
-        // 用量日志
-        const logRes = await api.get('/api/log/self', {
-          params: { p: 1, page_size: 50 },
-        })
-        setLogs(logRes.data?.data?.items || logRes.data?.data || [])
-
-        // 用户余额
+        await loadLogs(1)
         const userRes = await api.get('/api/user/self')
         const user = userRes.data?.data || {}
         setQuota({
@@ -46,6 +76,19 @@ export function ConsoleUsage() {
     }
     load()
   }, [])
+
+  const handleRefresh = async () => {
+    setRefreshing(true)
+    await loadLogs(page)
+    setRefreshing(false)
+  }
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage)
+    loadLogs(newPage)
+  }
+
+  const totalPages = Math.ceil(total / pageSize)
 
   // 统计
   const stats = {
@@ -165,7 +208,42 @@ export function ConsoleUsage() {
 
       {/* 调用记录 */}
       <div>
-        <h3 className="font-semibold text-white mb-4">最近调用记录</h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-semibold text-white">调用日志明细</h3>
+          <button
+            onClick={handleRefresh}
+            disabled={refreshing}
+            className="flex items-center gap-1 text-xs text-gray-400 hover:text-[#c8ff00] transition-colors"
+          >
+            <RefreshCw size={14} className={refreshing ? 'animate-spin' : ''} />
+            刷新
+          </button>
+        </div>
+
+        {/* 筛选栏 */}
+        <div className="flex flex-wrap gap-3 mb-4">
+          <div className="relative flex-1 min-w-[200px]">
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="搜索模型名称..."
+              className="w-full bg-white/[0.03] border border-white/10 rounded-lg pl-9 pr-4 py-2 text-sm text-white placeholder-gray-600 focus:border-[#c8ff00]/50 focus:outline-none"
+            />
+          </div>
+          <select
+            value={modelFilter}
+            onChange={(e) => { setModelFilter(e.target.value); setPage(1); setTimeout(() => loadLogs(1), 0) }}
+            className="bg-white/[0.03] border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:border-[#c8ff00]/50 focus:outline-none"
+          >
+            <option value="">全部模型</option>
+            {[...new Set(logs.map(l => l.model_name))].map(m => (
+              <option key={m} value={m}>{m}</option>
+            ))}
+          </select>
+        </div>
+
         {loading ? (
           <div className="space-y-2">
             {Array.from({ length: 5 }).map((_, i) => (
@@ -182,34 +260,65 @@ export function ConsoleUsage() {
             <p className="text-sm text-gray-600 mt-1">开始使用 API 后，这里会显示调用记录</p>
           </div>
         ) : (
-          <div className="bg-white/[0.03] border border-white/5 rounded-xl overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-white/5 text-left text-gray-500">
-                    <th className="px-4 py-3 font-medium">时间</th>
-                    <th className="px-4 py-3 font-medium">模型</th>
-                    <th className="px-4 py-3 font-medium text-right">Prompt</th>
-                    <th className="px-4 py-3 font-medium text-right">Completion</th>
-                    <th className="px-4 py-3 font-medium text-right">费用</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {logs.slice(0, 20).map(log => (
-                    <tr key={log.id} className="border-b border-white/5 hover:bg-white/[0.02]">
-                      <td className="px-4 py-3 text-gray-400">{formatDate(log.created_time)}</td>
-                      <td className="px-4 py-3 text-white font-mono text-xs">{log.model_name}</td>
-                      <td className="px-4 py-3 text-right text-gray-400">{log.prompt_tokens}</td>
-                      <td className="px-4 py-3 text-right text-gray-400">{log.completion_tokens}</td>
-                      <td className="px-4 py-3 text-right text-[#c8ff00]">
-                        ${(log.quota / 500000).toFixed(4)}
-                      </td>
+          <>
+            <div className="bg-white/[0.03] border border-white/5 rounded-xl overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-white/5 text-left text-gray-500">
+                      <th className="px-4 py-3 font-medium">时间</th>
+                      <th className="px-4 py-3 font-medium">模型</th>
+                      <th className="px-4 py-3 font-medium text-right">Prompt</th>
+                      <th className="px-4 py-3 font-medium text-right">Completion</th>
+                      <th className="px-4 py-3 font-medium text-right">Token 总计</th>
+                      <th className="px-4 py-3 font-medium text-right">费用</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {logs
+                      .filter(l => !searchQuery || l.model_name.toLowerCase().includes(searchQuery.toLowerCase()))
+                      .map(log => (
+                      <tr key={log.id} className="border-b border-white/5 hover:bg-white/[0.02]">
+                        <td className="px-4 py-3 text-gray-400 whitespace-nowrap">{formatDate(log.created_time)}</td>
+                        <td className="px-4 py-3 text-white font-mono text-xs">{log.model_name}</td>
+                        <td className="px-4 py-3 text-right text-gray-400">{log.prompt_tokens?.toLocaleString() || 0}</td>
+                        <td className="px-4 py-3 text-right text-gray-400">{log.completion_tokens?.toLocaleString() || 0}</td>
+                        <td className="px-4 py-3 text-right text-gray-300">{((log.prompt_tokens || 0) + (log.completion_tokens || 0)).toLocaleString()}</td>
+                        <td className="px-4 py-3 text-right text-[#c8ff00] font-medium">
+                          ${(log.quota / 500000).toFixed(4)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
+
+            {/* 分页 */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between mt-4">
+                <p className="text-xs text-gray-500">
+                  共 {total} 条记录，第 {page}/{totalPages} 页
+                </p>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handlePageChange(page - 1)}
+                    disabled={page <= 1}
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/10 text-xs text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  >
+                    <ChevronLeft size={14} /> 上一页
+                  </button>
+                  <button
+                    onClick={() => handlePageChange(page + 1)}
+                    disabled={page >= totalPages}
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/10 text-xs text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  >
+                    下一页 <ChevronRight size={14} />
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

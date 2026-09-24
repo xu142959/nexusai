@@ -47,8 +47,8 @@ export function ProfileDropdown() {
   const user = useAuthStore((state) => state.auth.user)
   const { displayName, roleLabel } = useUserDisplay(user)
   const isSuperAdmin = user?.role === ROLE.SUPER_ADMIN
-  const isWalletVisible = useIsSidebarModuleVisible('/wallet')
-  const isSecurityVisible = useIsSidebarModuleVisible('/security')
+  const isWalletVisible = useIsSidebarModuleVisible('/admin/wallet')
+  const isSecurityVisible = useIsSidebarModuleVisible('/admin/security')
   const avatarName = user?.username || displayName
   const avatarFallback = getUserAvatarFallback(avatarName)
   const avatarFallbackStyle = useMemo(

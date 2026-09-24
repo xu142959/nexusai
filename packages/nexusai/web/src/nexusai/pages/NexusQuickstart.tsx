@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Link } from '@tanstack/react-router'
 import { motion } from 'motion/react'
 import { Copy, Check, Terminal, Key, Zap, BookOpen, ArrowRight, Code2 } from 'lucide-react'
@@ -32,50 +32,51 @@ const steps = [
   },
 ]
 
-const codeExamples = [
-  {
-    lang: 'cURL',
-    code: `curl https://api.nexusai.com/v1/chat/completions \\
+export function NexusQuickstart() {
+  const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
+  const codeExamples = useMemo(() => [
+    {
+      lang: 'cURL',
+      code: `curl ${baseUrl}/v1/chat/completions \\
   -H "Authorization: Bearer $API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
-    "model": "agnes-2.0-flash",
+    "model": "gpt-4o",
     "messages": [{"role": "user", "content": "你好！"}]
   }'`,
-  },
-  {
-    lang: 'Python',
-    code: `from openai import OpenAI
+    },
+    {
+      lang: 'Python',
+      code: `from openai import OpenAI
 
 client = OpenAI(
     api_key="YOUR_API_KEY",
-    base_url="https://api.nexusai.com/v1"
+    base_url="${baseUrl}/v1"
 )
 
 response = client.chat.completions.create(
-    model="agnes-2.0-flash",
+    model="gpt-4o",
     messages=[{"role": "user", "content": "你好！"}]
 )
 print(response.choices[0].message.content)`,
-  },
-  {
-    lang: 'Node.js',
-    code: `import OpenAI from 'openai'
+    },
+    {
+      lang: 'Node.js',
+      code: `import OpenAI from 'openai'
 
 const client = new OpenAI({
   apiKey: 'YOUR_API_KEY',
-  baseURL: 'https://api.nexusai.com/v1',
+  baseURL: '${baseUrl}/v1',
 })
 
 const response = await client.chat.completions.create({
-  model: 'agnes-2.0-flash',
+  model: 'gpt-4o',
   messages: [{ role: 'user', content: '你好！' }],
 })
 console.log(response.choices[0].message.content)`,
-  },
-]
+    },
+  ], [baseUrl])
 
-export function NexusQuickstart() {
   const [activeTab, setActiveTab] = useState(0)
   const [copied, setCopied] = useState(false)
 

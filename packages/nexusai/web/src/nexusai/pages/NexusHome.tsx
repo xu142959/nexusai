@@ -22,8 +22,8 @@ const features = [
   },
   {
     icon: Globe,
-    title: '全球基础设施',
-    desc: '多区域部署，99.99% 可用性，无论用户在哪里都能快速访问。',
+    title: '统一接入',
+    desc: '一个 API 接口接入多家模型提供商，无需分别对接和维护。',
   },
   {
     icon: Cpu,
@@ -44,7 +44,7 @@ const useCases = [
 const codeExamples = [
   {
     lang: 'cURL',
-    code: `curl https://api.nexusai.com/v1/chat/completions \\
+    code: `curl ${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'}/v1/chat/completions \\
   -H "Authorization: Bearer $API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -58,7 +58,7 @@ const codeExamples = [
 
 client = OpenAI(
     api_key="your-api-key",
-    base_url="https://api.nexusai.com/v1"
+    base_url="${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'}/v1"
 )
 
 response = client.chat.completions.create(
@@ -73,7 +73,7 @@ print(response.choices[0].message.content)`,
 
 const client = new OpenAI({
   apiKey: process.env.API_KEY,
-  baseURL: 'https://api.nexusai.com/v1',
+  baseURL: '${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'}/v1',
 })
 
 const response = await client.chat.completions.create({
@@ -86,14 +86,27 @@ console.log(response.choices[0].message.content)`,
 
 export function NexusHome() {
   const [modelCount, setModelCount] = useState(0)
+  const [providerCount, setProviderCount] = useState(0)
   const [hotModels, setHotModels] = useState<string[]>([])
   const [activeTab, setActiveTab] = useState(0)
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
-    // 写死演示数据，避免未登录时 401 重定向
-    setModelCount(500)
-    setHotModels(['gpt-4o', 'claude-3-opus', 'gemini-2.0-flash', 'deepseek-v3', 'qwen-max', 'claude-3.5-sonnet'])
+    // 从后端获取真实模型和定价数据
+    api.get('/api/pricing').then((res) => {
+      const data = res.data?.data || []
+      setModelCount(data.length)
+      // 从模型列表中提取提供商
+      const providers = new Set<string>()
+      data.forEach((m: any) => {
+        if (m.provider_name) providers.add(m.provider_name)
+      })
+      setProviderCount(providers.size)
+      // 取前6个模型作为热门
+      setHotModels(data.slice(0, 6).map((m: any) => m.id || m.model_name || m.name))
+    }).catch(() => {
+      // 公开接口，失败时保持0
+    })
   }, [])
 
   const copyCode = () => {
@@ -129,7 +142,7 @@ export function NexusHome() {
             className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-1.5 text-sm text-gray-300 mb-8"
           >
             <Sparkles size={14} className="text-[#c8ff00]" />
-            支持 500+  AI 模型，一个 API 全部搞定
+            {modelCount > 0 ? `支持 ${modelCount} 个 AI 模型` : '统一 AI 模型 API 网关'}
           </motion.div>
 
           <motion.h1
@@ -138,7 +151,7 @@ export function NexusHome() {
             transition={{ delay: 0.1 }}
             className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
           >
-            {BRAND.tagline}
+            一个 API，接入所有 AI 模型
           </motion.h1>
 
           <motion.p
@@ -147,7 +160,7 @@ export function NexusHome() {
             transition={{ delay: 0.2 }}
             className="text-xl text-gray-400 mb-10 max-w-[1880px] mx-auto"
           >
-            {BRAND.description}
+            更优价格，更稳可用，无需订阅。{modelCount > 0 ? `${modelCount} 个模型` : '多模型'}统一接入，OpenAI 兼容接口
           </motion.p>
 
           <motion.div
@@ -176,10 +189,10 @@ export function NexusHome() {
       <section className="py-16 px-6 border-y border-white/5">
         <div className="max-w-[1880px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
           {[
-            { value: modelCount > 0 ? `${modelCount}+` : '500+', label: 'AI 模型' },
-            { value: '80+', label: '提供商' },
-            { value: '99.99%', label: '可用性' },
-            { value: '400T+', label: '月 Token 量' },
+            { value: `${modelCount}`, label: '可用模型' },
+            { value: `${providerCount}`, label: '提供商' },
+            { value: 'v1.0', label: '当前版本' },
+            { value: 'OpenAI', label: '兼容协议' },
           ].map((s, i) => (
             <motion.div
               key={s.label}

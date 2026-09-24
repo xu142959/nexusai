@@ -59,7 +59,7 @@ export function useSidebarData(): SidebarData {
         items: [
           {
             title: t('Playground'),
-            url: '/playground',
+            url: '/admin/playground',
             icon: FlaskConical,
           },
           {
@@ -75,34 +75,34 @@ export function useSidebarData(): SidebarData {
         items: [
           {
             title: t('Overview'),
-            url: '/dashboard/overview',
+            url: '/admin/dashboard/overview',
             icon: Activity,
           },
           {
             title: t('Dashboard'),
-            url: '/dashboard/models',
+            url: '/admin/dashboard/models',
             icon: LayoutDashboard,
           },
           {
             title: t('API Keys'),
-            url: '/keys',
+            url: '/admin/keys',
             icon: Key,
           },
           {
             title: t('Usage Logs'),
-            url: '/usage-logs/common',
+            url: '/admin/usage-logs/common',
             icon: FileText,
           },
           {
             title: t('Audit Logs'),
-            url: '/usage-logs/audit',
+            url: '/admin/usage-logs/audit',
             icon: ClipboardList,
           },
           {
             title: t('Task Logs'),
-            url: '/usage-logs/task',
-            activeUrls: ['/usage-logs/drawing'],
-            configUrls: ['/usage-logs/drawing', '/usage-logs/task'],
+            url: '/admin/usage-logs/task',
+            activeUrls: ['/admin/usage-logs/drawing'],
+            configUrls: ['/admin/usage-logs/drawing', '/admin/usage-logs/task'],
             icon: ListTodo,
           },
         ],
@@ -113,17 +113,17 @@ export function useSidebarData(): SidebarData {
         items: [
           {
             title: t('Wallet'),
-            url: '/wallet',
+            url: '/admin/wallet',
             icon: Wallet,
           },
           {
             title: t('Profile'),
-            url: '/profile',
+            url: '/admin/profile',
             icon: User,
           },
           {
             title: t('Security & Access'),
-            url: '/security',
+            url: '/admin/security',
             icon: ShieldCheck,
           },
         ],
@@ -134,45 +134,45 @@ export function useSidebarData(): SidebarData {
         items: [
           {
             title: t('Channels'),
-            url: '/channels',
+            url: '/admin/channels',
             icon: Radio,
           },
           {
             title: t('Models'),
-            url: '/models/metadata',
+            url: '/admin/models/metadata',
             icon: Box,
           },
           {
             title: t('Users'),
-            url: '/users',
+            url: '/admin/users',
             icon: Users,
           },
           {
             title: t('Redemption Codes'),
-            url: '/redemption-codes',
+            url: '/admin/redemption-codes',
             icon: Ticket,
           },
           {
             title: t('Subscriptions'),
-            url: '/subscriptions',
+            url: '/admin/subscriptions',
             icon: CreditCard,
           },
           {
             title: t('System Info'),
-            url: '/system-info',
+            url: '/admin/system-info',
             icon: ServerCog,
             requiredRole: ROLE.SUPER_ADMIN,
           },
           {
             title: t('Task Plugins'),
-            url: '/task-plugins',
+            url: '/admin/task-plugins',
             icon: PlugZap,
             requiredRole: ROLE.SUPER_ADMIN,
           },
           {
             title: t('System Settings'),
-            url: '/system-settings/site',
-            activeUrls: ['/system-settings'],
+            url: '/admin/system-settings/site',
+            activeUrls: ['/admin/system-settings'],
             icon: Settings,
           },
         ],
