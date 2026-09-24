@@ -99,11 +99,16 @@ export function ConsoleQuickstart() {
     setBaseUrl(window.location.origin)
     const loadKeys = async () => {
       try {
-        const res = await api.get('/api/user/token')
-        const data = res.data?.data || []
+        // 只读列表接口（不能用 /api/user/token，那会生成新 key 并覆盖旧的）
+        const res = await api.get('/api/token/', { params: { p: 1, page_size: 5 } })
+        const data = res.data?.data?.items || []
         setKeys(data)
         if (data.length > 0) {
-          setApiKey(data[0].key || data[0].token || 'sk-...')
+          // 列表里的 key 是掩码，需取明文
+          const keyRes = await api.post(`/api/token/${data[0].id}/key`, {}, { skipErrorHandler: true })
+          setApiKey(keyRes.data?.data?.key || 'sk-...')
+        } else {
+          setApiKey('')
         }
       } catch {
         setApiKey('sk-your-api-key')
@@ -166,7 +171,7 @@ export function ConsoleQuickstart() {
             <KeyRound size={16} className="text-[#c8ff00]" /> 你的 API Key
           </h3>
           {keys.length === 0 && (
-            <a href="/console/keys" className="text-xs text-[#c8ff00 hover:underline">去创建 →</a>
+            <a href="/console/keys" className="text-xs text-[#c8ff00] hover:underline">去创建 →</a>
           )}
         </div>
         <div className="flex items-center gap-3">

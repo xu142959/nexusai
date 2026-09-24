@@ -56,8 +56,8 @@ export function ConsoleSettings() {
         const data = res.data?.data || res.data || {}
         setUserInfo(data)
 
-        // 从用户信息中加载设置
-        if (data.language) setLanguage(data.language)
+        // 从用户信息中加载设置（language 位于 data.setting 中）
+        if (data.setting?.language) setLanguage(data.setting.language)
       } catch (err: any) {
         console.error('获取用户信息失败:', err)
         setError(err?.message || '获取用户信息失败')
@@ -79,18 +79,18 @@ export function ConsoleSettings() {
   const handleSave = async () => {
     setSaving(true)
     try {
-      // 保存本地设置
+      // 保存本地设置（主题为纯本地偏好）
       localStorage.setItem('nexusai-theme', theme)
       localStorage.setItem('i18nextLng', language)
 
-      // 尝试保存到后端（如果支持）
+      // 语言偏好同步到后端（UpdateSelf 支持 language 字段）
       try {
         await api.put('/api/user/self', {
           language: language,
         })
-      } catch (e) {
-        // 后端可能不支持更新语言，忽略
-        console.log('后端不支持更新用户设置，仅保存本地')
+      } catch {
+        toast.error('语言偏好同步失败，已仅保存本地')
+        return
       }
 
       toast.success('设置已保存')

@@ -7,7 +7,7 @@ import {
 import { motion, AnimatePresence } from 'motion/react'
 import { Link, useRouter } from '@tanstack/react-router'
 import { useShallow } from 'zustand/shallow'
-import { clearAuthentication } from '@/lib/api'
+import { clearAuthentication, api } from '@/lib/api'
 import { useChatStore, type ChatMessage } from '../store/chatStore'
 import { getApiKey, clearApiKeyCache } from '../lib/apikey'
 import { Markdown } from '../components/Markdown'
@@ -147,9 +147,20 @@ export function NexusChat() {
   // 初始化：加载模型列表和 API key
   useEffect(() => {
     const init = async () => {
-      // 模型列表 - 写死演示数据
-      const demoModels = ['gpt-4o', 'claude-3.5-sonnet', 'gemini-2.0-flash', 'deepseek-v3', 'qwen-max']
-      const unique = [...new Set(demoModels)].sort()
+      // 模型列表 - 从后端读取（/api/models 返回 {渠道类型: [模型名]}，需扁平化）
+      const fallbackModels = ['gpt-4o', 'claude-3.5-sonnet', 'gemini-2.0-flash', 'deepseek-v3', 'qwen-max']
+      let models: string[] = []
+      try {
+        const res = await api.get('/api/models', { skipErrorHandler: true })
+        const data = res.data?.data
+        if (data && typeof data === 'object') {
+          const all = Object.values(data).flat().filter(Boolean) as string[]
+          models = [...new Set(all)].sort()
+        }
+      } catch {
+        // 未登录或后端不可用时回退演示模型
+      }
+      const unique = models.length > 0 ? models : fallbackModels
       setModelList(unique)
       if (activeConv && !activeConv.model && unique.length > 0) {
         updateConversation(activeConv.id, { model: unique[0] })

@@ -1,6 +1,10 @@
+# NexusAI 反向代理配置
+#
+# 默认单二进制部署：服务监听 3000 端口（go:embed 同时提供前端页面与静态资源），
+# 因此这里只需把全部流量反向代理到 3000 端口，无需 file_server / try_files。
+#
+# 若使用 docker-compose 部署（服务名 nexusai，容器内 3000），通过环境变量覆盖：
+#   UPSTREAM=nexusai:3000 caddy run ...
 :80 {
-    root * /srv
-    file_server
-    reverse_proxy /api/* server:8080
-    try_files {path} /index.html
+    reverse_proxy {$UPSTREAM:127.0.0.1:3000}
 }

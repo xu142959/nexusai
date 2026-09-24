@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Link } from '@tanstack/react-router'
 import { motion } from 'motion/react'
-import { Trophy, TrendingUp, TrendingDown, Minus, Clock, BarChart3 } from 'lucide-react'
+import { Trophy, TrendingUp, TrendingDown, Minus, Clock, BarChart3, RotateCcw, AlertCircle } from 'lucide-react'
 import { api } from '@/lib/api'
 import { SNLoading, SNPageHeader } from '../components/StoryNestUI'
 
@@ -28,47 +28,40 @@ type TimeRange = 'day' | 'week' | 'month'
 export function NexusRankings() {
   const [data, setData] = useState<RankedModel[]>([])
   const [loading, setLoading] = useState(true)
-  const [, setError] = useState('')
+  const [error, setError] = useState('')
   const [timeRange, setTimeRange] = useState<TimeRange>('week')
   const [topMovers, setTopMovers] = useState<any[]>([])
   const [topDroppers, setTopDroppers] = useState<any[]>([])
 
-  useEffect(() => {
-    const load = async () => {
-      setLoading(true)
-      setError('')
-      try {
-        const res = await api.get('/api/rankings', {
-          params: { period: timeRange },
-        })
-        const result = res.data?.data as RankingsResponse
-        if (result && Array.isArray(result.models)) {
-          setData(result.models)
-          setTopMovers(result.top_movers || [])
-          setTopDroppers(result.top_droppers || [])
-        } else {
-          setData([])
-        }
-      } catch (e: any) {
-        setError(e.message || '加载排行榜失败')
-        setData([
-          { rank: 1, model_name: 'gpt-4o', vendor: 'OpenAI', category: 'chat', total_tokens: 1250000000, share: 25.5, growth_pct: 12.3 },
-          { rank: 2, model_name: 'claude-3-opus', vendor: 'Anthropic', category: 'chat', total_tokens: 980000000, share: 20.1, growth_pct: 8.5 },
-          { rank: 3, model_name: 'gemini-1.5-pro', vendor: 'Google', category: 'chat', total_tokens: 870000000, share: 17.8, growth_pct: -2.1 },
-          { rank: 4, model_name: 'gpt-3.5-turbo', vendor: 'OpenAI', category: 'chat', total_tokens: 650000000, share: 13.2, growth_pct: -5.4 },
-          { rank: 5, model_name: 'claude-3-sonnet', vendor: 'Anthropic', category: 'chat', total_tokens: 540000000, share: 11.0, growth_pct: 15.2 },
-          { rank: 6, model_name: 'llama-3-70b', vendor: 'Meta', category: 'chat', total_tokens: 420000000, share: 8.5, growth_pct: 3.1 },
-          { rank: 7, model_name: 'mistral-large', vendor: 'Mistral', category: 'chat', total_tokens: 380000000, share: 7.7, growth_pct: -1.2 },
-          { rank: 8, model_name: 'deepseek-chat', vendor: 'DeepSeek', category: 'chat', total_tokens: 320000000, share: 6.5, growth_pct: 22.4 },
-          { rank: 9, model_name: 'qwen2-72b', vendor: 'Alibaba', category: 'chat', total_tokens: 280000000, share: 5.7, growth_pct: 9.8 },
-          { rank: 10, model_name: 'command-r-plus', vendor: 'Cohere', category: 'chat', total_tokens: 210000000, share: 4.3, growth_pct: -3.5 },
-        ])
-      } finally {
-        setLoading(false)
+  const load = useCallback(async () => {
+    setLoading(true)
+    setError('')
+    try {
+      const res = await api.get('/api/rankings', {
+        params: { period: timeRange },
+      })
+      const result = res.data?.data as RankingsResponse
+      if (result && Array.isArray(result.models)) {
+        setData(result.models)
+        setTopMovers(result.top_movers || [])
+        setTopDroppers(result.top_droppers || [])
+      } else {
+        setData([])
       }
+    } catch (e: any) {
+      // 失败时展示空态 + 错误提示，不使用演示数据兜底
+      setError(e.message || '加载排行榜失败')
+      setData([])
+      setTopMovers([])
+      setTopDroppers([])
+    } finally {
+      setLoading(false)
     }
-    load()
   }, [timeRange])
+
+  useEffect(() => {
+    load()
+  }, [load])
 
   const maxTokens = data[0]?.total_tokens || 1
 
@@ -184,6 +177,22 @@ export function NexusRankings() {
 
           {loading ? (
             <SNLoading text="加载排行榜数据中..." />
+          ) : error ? (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <AlertCircle size={32} className="text-red-400 mb-3" />
+              <p className="text-sm text-red-300 mb-4">加载失败：{error}</p>
+              <button
+                onClick={load}
+                className="flex items-center gap-2 text-sm bg-white/5 hover:bg-white/10 text-gray-300 px-4 py-2 rounded-lg transition-colors"
+              >
+                <RotateCcw size={14} /> 重试
+              </button>
+            </div>
+          ) : data.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <BarChart3 size={32} className="text-gray-600 mb-3" />
+              <p className="text-sm text-gray-500">暂无排行榜数据</p>
+            </div>
           ) : (
             <div className="divide-y divide-white/5">
               {data.map((model, idx) => {

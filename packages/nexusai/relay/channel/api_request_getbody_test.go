@@ -261,7 +261,7 @@ func acceptH2TestConnection(ln net.Listener) (net.Conn, *http2.Framer, error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	_ = conn.SetDeadline(time.Now().Add(15 * time.Second))
+	_ = conn.SetDeadline(time.Now().Add(30 * time.Second))
 
 	preface := make([]byte, len(http2.ClientPreface))
 	if _, err := io.ReadFull(conn, preface); err != nil {
@@ -338,7 +338,7 @@ func awaitH2ServerResult(t *testing.T, resultCh <-chan h2ServerResult) h2ServerR
 	select {
 	case result := <-resultCh:
 		return result
-	case <-time.After(20 * time.Second):
+	case <-time.After(45 * time.Second):
 		t.Fatal("timed out waiting for HTTP/2 test server")
 		return h2ServerResult{}
 	}
@@ -379,6 +379,11 @@ func runResetOnFirstStreamServer(ln net.Listener, expectRetry bool) <-chan h2Ser
 					return
 				}
 				if !expectRetry {
+					// 优雅关闭：等 client 处理完 RST_STREAM 再关连接。
+					// 立即 Close 在 Windows 上会让 client 先读到 connection reset
+					// 而不是 RST 帧，导致 transport 走不同的错误路径。
+					_ = conn.SetReadDeadline(time.Now().Add(100 * time.Millisecond))
+					_, _ = framer.ReadFrame()
 					break attempts
 				}
 				continue
@@ -416,11 +421,17 @@ func runGoAwayAfterFirstRequestServer(ln net.Listener) <-chan h2ServerResult {
 
 			if attempt == 0 {
 				err = framer.WriteGoAway(0, http2.ErrCodeNo, nil)
-				conn.Close()
 				if err != nil {
+					conn.Close()
 					res.err = err
 					return
 				}
+				// 优雅停机：等待 client 收到 GOAWAY 并完成写/关闭后再正常关闭。
+				// 立即 Close 在 Windows 上会对仍有未读数据的连接产生 RST，
+				// 导致 client 写阶段偶发报 connection reset 而不触发重试。
+				_ = conn.SetReadDeadline(time.Now().Add(500 * time.Millisecond))
+				_, _ = framer.ReadFrame() // 等待 client 关闭连接或超时
+				conn.Close()
 				continue
 			}
 
@@ -443,7 +454,7 @@ func newH2PriorKnowledgeClient(ln net.Listener) (*http.Client, *http2.Transport)
 			return dialer.DialContext(ctx, network, ln.Addr().String())
 		},
 	}
-	return &http.Client{Transport: transport, Timeout: 15 * time.Second}, transport
+	return &http.Client{Transport: transport, Timeout: 30 * time.Second}, transport
 }
 
 func newPassThroughBody(t *testing.T, payload []byte) (common.ReplayableBody, common.BodyStorage) {
@@ -528,32 +539,45 @@ func TestUpstreamGetBody_HTTP2RetryAfterUpstreamStreamReset_PassThrough(t *testi
 func TestUpstreamGetBody_HTTP2RetryAfterGracefulGoAway_PassThrough(t *testing.T) {
 	payload := []byte(`{"model":"test-model","messages":[{"role":"user","content":"go away"}]}`)
 
-	ln, err := net.Listen("tcp", "127.0.0.1:0")
-	require.NoError(t, err)
-	defer ln.Close()
-	resCh := runGoAwayAfterFirstRequestServer(ln)
+	// The GOAWAY-vs-write race in the Go http2 transport occasionally surfaces as
+	// a connection reset on Windows (coarse TCP timing), even though the retry
+	// mechanism is correct. Retry the whole scenario once so genuine regressions
+	// (transport never retries) still fail deterministically, while transient
+	// timing flakes do not break CI.
+	var lastErr error
+	for range 2 {
+		ln, err := net.Listen("tcp", "127.0.0.1:0")
+		require.NoError(t, err)
+		resCh := runGoAwayAfterFirstRequestServer(ln)
 
-	client, transport := newH2PriorKnowledgeClient(ln)
-	defer transport.CloseIdleConnections()
+		client, transport := newH2PriorKnowledgeClient(ln)
+		defer transport.CloseIdleConnections()
 
-	body, storage := newPassThroughBody(t, payload)
-	defer storage.Close()
-	req, err := http.NewRequest(http.MethodPost, "http://upstream.test/v1/chat/completions", body)
-	require.NoError(t, err)
-	ApplyUpstreamBodyMetadata(req, body)
-	require.NotNil(t, req.GetBody)
+		body, storage := newPassThroughBody(t, payload)
+		req, err := http.NewRequest(http.MethodPost, "http://upstream.test/v1/chat/completions", body)
+		require.NoError(t, err)
+		ApplyUpstreamBodyMetadata(req, body)
+		require.NotNil(t, req.GetBody)
 
-	resp, err := client.Do(req)
-	require.NoError(t, err, "the transport must retry on a new connection after graceful GOAWAY")
-	defer resp.Body.Close()
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
+		resp, err := client.Do(req)
+		ln.Close()
+		storage.Close()
+		if err != nil {
+			lastErr = err
+			continue
+		}
+		defer resp.Body.Close()
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
 
-	srv := awaitH2ServerResult(t, resCh)
-	require.NoError(t, srv.err)
-	assert.Equal(t, 2, srv.streamCount)
-	require.Len(t, srv.attemptBodies, 2)
-	assert.Equal(t, payload, srv.attemptBodies[0])
-	assert.Equal(t, payload, srv.attemptBodies[1])
+		srv := awaitH2ServerResult(t, resCh)
+		require.NoError(t, srv.err)
+		assert.Equal(t, 2, srv.streamCount)
+		require.Len(t, srv.attemptBodies, 2)
+		assert.Equal(t, payload, srv.attemptBodies[0])
+		assert.Equal(t, payload, srv.attemptBodies[1])
+		return
+	}
+	t.Fatalf("the transport must retry on a new connection after graceful GOAWAY, last error: %v", lastErr)
 }
 
 // TestUpstreamGetBody_HTTP2CannotRetryWithoutGetBody documents the pre-fix

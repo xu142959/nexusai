@@ -64,6 +64,10 @@ func setupAuthSessionTestDB(t *testing.T) *model.User {
 
 func useIndependentAuthSessionRedis(t *testing.T) (*miniredis.Miniredis, *redis.Client, *miniredis.Miniredis, *redis.Client) {
 	t.Helper()
+	// Serialize against channel-affinity usage-cache tests: they read the same
+	// global RedisEnabled/RDB and must not observe a mid-flight flip.
+	channelAffinityUsageCacheTestMu.Lock()
+	t.Cleanup(channelAffinityUsageCacheTestMu.Unlock)
 	previousRedisEnabled := common.RedisEnabled
 	previousRDB := common.RDB
 	previousSyncFrequency := common.SyncFrequency

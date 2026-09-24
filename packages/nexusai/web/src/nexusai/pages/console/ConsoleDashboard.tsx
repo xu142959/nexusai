@@ -9,18 +9,16 @@ export function ConsoleDashboard() {
     let cancelled = false
     const load = async () => {
       try {
-        console.log('[Dashboard] start loading...')
         const [userRes, logRes, keyRes] = await Promise.all([
           api.get('/api/user/self').catch(() => ({ data: {} })),
-          api.get('/api/log/self?p=1&page_size=10').catch(() => ({ data: { data: [] } })),
-          api.get('/api/user/token').catch(() => ({ data: { data: [] } })),
+          api.get('/api/log/self?p=1&page_size=10').catch(() => ({ data: { data: { items: [] } } })),
+          api.get('/api/token/', { params: { p: 1, page_size: 5 } }).catch(() => ({ data: { data: { items: [] } } })),
         ])
         if (cancelled) return
-        console.log('[Dashboard] APIs done')
         setData({
           user: userRes.data?.data || userRes.data,
-          logs: logRes.data?.data || [],
-          keys: keyRes.data?.data || [],
+          logs: logRes.data?.data?.items || logRes.data?.data || [],
+          keys: keyRes.data?.data?.items || keyRes.data?.data || [],
         })
       } catch (e) {
         console.error('[Dashboard] error:', e)

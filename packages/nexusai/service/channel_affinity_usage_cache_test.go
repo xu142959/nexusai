@@ -3,14 +3,54 @@ package service
 import (
 	"fmt"
 	"net/http/httptest"
+	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 
+	"github.com/QuantumNous/new-api/common"
 	"github.com/QuantumNous/new-api/relaykit/dto"
 	"github.com/QuantumNous/new-api/relaykit/types"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/require"
 )
+
+// usageCacheTestKeySeq guarantees a process-unique suffix for cache keys:
+// on Windows time.Now().UnixNano() shares a coarse clock tick (~15.6ms), so
+// repeated test rounds can collide and leak stats into the next round.
+var usageCacheTestKeySeq atomic.Uint64
+
+// usageCacheTestKey builds a collision-free rule/key fingerprint pair.
+func usageCacheTestKey(t *testing.T) (string, string) {
+	t.Helper()
+	seq := usageCacheTestKeySeq.Add(1)
+	ruleName := fmt.Sprintf("rule_%s_%d_%d", t.Name(), seq, time.Now().UnixNano())
+	keyFP := fmt.Sprintf("fp_%s_%d_%d", t.Name(), seq, time.Now().UnixNano())
+	return ruleName, keyFP
+}
+
+// channelAffinityUsageCacheTestMu serializes these tests against other tests
+// in the same package that mutate the global RedisEnabled/RDB state
+// (e.g. useIndependentAuthSessionRedis in auth_session_test.go). The
+// HybridCache used by the channel-affinity usage cache switches between
+// Redis and memory based on that global state; without serialization, a
+// parallel flip can make an in-memory write invisible to the reader and
+// produce flaky assertions.
+var channelAffinityUsageCacheTestMu sync.Mutex
+
+// isolateUsageCacheRedis pins Redis to disabled for the duration of the test
+// so these assertions deterministically exercise the in-memory cache.
+// HybridCache's redisOn() requires redis != nil AND RedisEnabled, so flipping
+// only RedisEnabled is sufficient; RDB must not be touched because other
+// tests in the package run in parallel and depend on it.
+func isolateUsageCacheRedis(t *testing.T) {
+	t.Helper()
+	previousRedisEnabled := common.RedisEnabled
+	common.RedisEnabled = false
+	t.Cleanup(func() {
+		common.RedisEnabled = previousRedisEnabled
+	})
+}
 
 func buildChannelAffinityStatsContextForTest(ruleName, usingGroup, keyFP string) *gin.Context {
 	rec := httptest.NewRecorder()
@@ -26,9 +66,11 @@ func buildChannelAffinityStatsContextForTest(ruleName, usingGroup, keyFP string)
 }
 
 func TestObserveChannelAffinityUsageCacheByRelayFormat_ClaudeMode(t *testing.T) {
-	ruleName := fmt.Sprintf("rule_%d", time.Now().UnixNano())
+	channelAffinityUsageCacheTestMu.Lock()
+	defer channelAffinityUsageCacheTestMu.Unlock()
+	isolateUsageCacheRedis(t)
+	ruleName, keyFP := usageCacheTestKey(t)
 	usingGroup := "default"
-	keyFP := fmt.Sprintf("fp_%d", time.Now().UnixNano())
 	ctx := buildChannelAffinityStatsContextForTest(ruleName, usingGroup, keyFP)
 
 	usage := &dto.Usage{
@@ -53,9 +95,11 @@ func TestObserveChannelAffinityUsageCacheByRelayFormat_ClaudeMode(t *testing.T) 
 }
 
 func TestObserveChannelAffinityUsageCacheByRelayFormat_MixedMode(t *testing.T) {
-	ruleName := fmt.Sprintf("rule_%d", time.Now().UnixNano())
+	channelAffinityUsageCacheTestMu.Lock()
+	defer channelAffinityUsageCacheTestMu.Unlock()
+	isolateUsageCacheRedis(t)
+	ruleName, keyFP := usageCacheTestKey(t)
 	usingGroup := "default"
-	keyFP := fmt.Sprintf("fp_%d", time.Now().UnixNano())
 	ctx := buildChannelAffinityStatsContextForTest(ruleName, usingGroup, keyFP)
 
 	openAIUsage := &dto.Usage{
@@ -83,9 +127,11 @@ func TestObserveChannelAffinityUsageCacheByRelayFormat_MixedMode(t *testing.T) {
 }
 
 func TestObserveChannelAffinityUsageCacheByRelayFormat_UnsupportedModeKeepsEmpty(t *testing.T) {
-	ruleName := fmt.Sprintf("rule_%d", time.Now().UnixNano())
+	channelAffinityUsageCacheTestMu.Lock()
+	defer channelAffinityUsageCacheTestMu.Unlock()
+	isolateUsageCacheRedis(t)
+	ruleName, keyFP := usageCacheTestKey(t)
 	usingGroup := "default"
-	keyFP := fmt.Sprintf("fp_%d", time.Now().UnixNano())
 	ctx := buildChannelAffinityStatsContextForTest(ruleName, usingGroup, keyFP)
 
 	usage := &dto.Usage{

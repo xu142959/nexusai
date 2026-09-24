@@ -2,50 +2,48 @@
 
 ## 架构
 
+NexusAI 默认是**单二进制部署**：后端（Go，监听 3000）通过 `go:embed` 同时提供前端页面（`web/dist`）与全部 API（`/api/*`、`/v1/*`），因此直接反代 3000 端口即可，不需要单独部署静态文件。
+
 ```
 用户浏览器
     │
     ▼
-Nginx (80/443)
-    ├── /          → 前端静态文件 (packages/nexusai/web/dist)
-    ├── /api/      → NexusAI 后端 (127.0.0.1:3000)
-    └── /v1/       → NexusAI 后端 (OpenAI 兼容接口)
+反代（Nginx / Caddy，可选，80/443）
+    │
+    ▼
+NexusAI 单二进制 (127.0.0.1:3000)
+    ├── 前端页面（go:embed web/dist）
+    ├── /api/      → 管理端 API
+    └── /v1/       → OpenAI 兼容接口
 ```
 
-## 1. 构建前端
+如需把前端静态文件拆出来由 Nginx 直接托管（仅此场景），可参考 `deploy/nginx.conf`。
+
+## 1. 构建
 
 ```bash
 cd packages/nexusai/web
-npm install
-npm run build
-# 产物在 packages/nexusai/web/dist/
+bun install
+bun run build
+# 产物在 packages/nexusai/web/dist/，会被 go:embed 打进后端二进制
 ```
 
-## 2. 部署静态文件
-
-将 `dist/` 目录复制到服务器：
+## 2. 构建后端二进制
 
 ```bash
-rsync -avz packages/nexusai/web/dist/ user@server:/var/www/nexusai/dist/
+cd packages/nexusai
+go build -o main .
+# 产物：packages/nexusai/main（单二进制，包含前端）
 ```
 
-## 3. 配置 Nginx
-
-复制 `deploy/nginx.conf` 到 `/etc/nginx/conf.d/nexusai.conf`，修改：
-- `server_name` 改为你的域名
-- `root` 路径与实际部署路径一致
-
-测试并重载：
-```bash
-nginx -t
-nginx -s reload
-```
-
-## 4. 启动后端
+## 3. 启动
 
 ```bash
-# 在后端目录
-./new-api --port 3000
+# 默认监听 3000
+./main
+
+# 指定端口
+./main --port 3000
 ```
 
 建议用 systemd 管理：
@@ -53,13 +51,13 @@ nginx -s reload
 ```ini
 # /etc/systemd/system/nexusai.service
 [Unit]
-Description=NexusAI Backend
+Description=NexusAI
 After=network.target
 
 [Service]
 Type=simple
 WorkingDirectory=/opt/nexusai
-ExecStart=/opt/nexusai/new-api --port 3000
+ExecStart=/opt/nexusai/main
 Restart=always
 
 [Install]
@@ -71,29 +69,27 @@ systemctl enable nexusai
 systemctl start nexusai
 ```
 
-## 5. HTTPS（Let's Encrypt）
+## 4. 反向代理（可选）
 
-```bash
-certbot --nginx -d nexusai.dev
-```
+单二进制已监听 3000，只需把 80/443 流量反代到 `127.0.0.1:3000`：
 
-Certbot 会自动修改 Nginx 配置，添加 443 监听和 SSL 证书。
+- Nginx：参考 `deploy/nginx.conf`（去掉静态文件部分，`/`、`/api/`、`/v1/` 全部 `proxy_pass http://127.0.0.1:3000`）
+- Caddy：见仓库根目录 `Caddyfile`（默认 `reverse_proxy {$UPSTREAM:127.0.0.1:3000}`）
 
-## 6. 环境变量
+HTTPS 可使用 `certbot --nginx -d 你的域名` 自动签发。
 
-前端品牌配置在：
+## 5. 环境变量
 
-```
-packages/nexusai/web/src/nexusai/config/brand.ts
-```
+- 首次启动前务必设置强随机密钥，参考根目录 `.env.example`（`SESSION_SECRET`、`CRYPTO_SECRET`，未设置时程序会拒绝启动）
+- 前端品牌配置在 `packages/nexusai/web/src/nexusai/config/brand.ts`
 
-## 7. 验证清单
+## 6. 验证清单
 
-- [ ] `npm run build` 成功，dist/ 有输出
-- [ ] Nginx 静态文件可访问（首页加载）
-- [ ] `/api/status` 返回 NexusAI 状态 JSON
+- [ ] `bun run build` 成功，`web/dist/` 有输出
+- [ ] `go build -o main .` 成功
+- [ ] 启动后首页可访问（go:embed 前端）
+- [ ] `/api/status` 返回 NexusAI 状态 JSON（公开）
 - [ ] `/v1/models` 需要 Bearer token
 - [ ] 注册/登录流程正常
-- [ ] 聊天流式响应正常（SSE）
-- [ ] HTTPS 证书有效
-
+- [ ] 聊天流式响应正常（SSE，反代需关闭缓冲）
+- [ ] HTTPS 证书有效（如配置）
