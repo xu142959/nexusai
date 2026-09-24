@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react'
 import { Link, useParams, useRouter } from '@tanstack/react-router'
 import { motion } from 'motion/react'
 import {
-  ArrowLeft, Zap, Clock, Cpu, MessageSquare, Copy, Check,
-  Sparkles, Code2, Terminal, Globe, Shield,
+  ArrowLeft, Zap, Cpu, MessageSquare, Copy, Check,
+  Sparkles, Code2, Globe, Shield,
 } from 'lucide-react'
 import { api } from '@/lib/api'
 import { Markdown } from '../components/Markdown'
@@ -72,7 +72,7 @@ console.log(response.choices[0].message.content)`,
   const [activeTab, setActiveTab] = useState(0)
   const [copied, setCopied] = useState(false)
   const [loading, setLoading] = useState(true)
-  const [modelInfo, setModelInfo] = useState<any>(null)
+  const [, setModelInfo] = useState<any>(null)
 
   useEffect(() => {
     const load = async () => {
@@ -119,7 +119,7 @@ console.log(response.choices[0].message.content)`,
       <div className="border-b border-white/5">
         <div className="max-w-[1880px] mx-auto px-6 py-4 flex items-center gap-4">
           <button
-            onClick={() => router.back()}
+            onClick={() => router.history.back()}
             className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
           >
             <ArrowLeft size={18} />

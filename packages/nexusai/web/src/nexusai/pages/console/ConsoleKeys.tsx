@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
-import { SNPageHeader, SNCard, SNBadge, SNButton, SNStatCard } from '../../components/StoryNestUI';
 import { motion } from 'motion/react'
 import {
-  KeyRound, Plus, Copy, Check, Trash2, Eye, EyeOff, Pencil,
+  KeyRound, Plus, Copy, Check, Trash2, Eye, EyeOff,
   Calendar, Zap, AlertCircle,
 } from 'lucide-react'
 import { api } from '@/lib/api'
@@ -28,9 +27,6 @@ export function ConsoleKeys() {
   const [copiedId, setCopiedId] = useState<number | null>(null)
   const [showCreate, setShowCreate] = useState(false)
   const [newName, setNewName] = useState('')
-  const [editingId, setEditingId] = useState<number | null>(null)
-  const [editName, setEditName] = useState('')
-  const [editQuota, setEditQuota] = useState('')
 
   const loadTokens = async () => {
     setLoading(true)
@@ -223,13 +219,6 @@ export function ConsoleKeys() {
                     </span>
                   </div>
                 </div>
-                <button
-                  onClick={() => startEdit(token)}
-                  className="text-gray-500 hover:text-[#c8ff00] transition-colors p-2"
-                  title="编辑"
-                >
-                  <Pencil size={16} />
-                </button>
                 <Tooltip content="删除密钥" position="top">
                   <button
                     onClick={() => deleteToken(token.id)}

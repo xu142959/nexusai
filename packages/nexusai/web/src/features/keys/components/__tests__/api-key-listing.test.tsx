@@ -327,15 +327,15 @@ async function renderKeysPage(status = 1, overrides: Partial<ApiKey> = {}) {
   client.setQueryData(['status'], {})
   clients.push(client)
   const root = createRootRoute()
-  const auth = createRoute({ getParentRoute: () => root, id: '_authenticated' })
+  const admin = createRoute({ getParentRoute: () => root, path: '/admin' })
   const keysRoute = createRoute({
-    getParentRoute: () => auth,
+    getParentRoute: () => admin,
     path: 'keys/',
     component: KeysPage,
   })
   const router = createRouter({
-    routeTree: root.addChildren([auth.addChildren([keysRoute])]),
-    history: createMemoryHistory({ initialEntries: ['/keys/'] }),
+    routeTree: root.addChildren([admin.addChildren([keysRoute])]),
+    history: createMemoryHistory({ initialEntries: ['/admin/keys/'] }),
   })
   await router.load()
   render(

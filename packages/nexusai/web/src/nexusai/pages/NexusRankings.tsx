@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from '@tanstack/react-router'
 import { motion } from 'motion/react'
 import { Trophy, TrendingUp, TrendingDown, Minus, Clock, BarChart3 } from 'lucide-react'
@@ -28,7 +28,7 @@ type TimeRange = 'day' | 'week' | 'month'
 export function NexusRankings() {
   const [data, setData] = useState<RankedModel[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
+  const [, setError] = useState('')
   const [timeRange, setTimeRange] = useState<TimeRange>('week')
   const [topMovers, setTopMovers] = useState<any[]>([])
   const [topDroppers, setTopDroppers] = useState<any[]>([])
@@ -154,7 +154,7 @@ export function NexusRankings() {
               <BarChart3 size={16} className="text-[#c8ff00]" /> 市场份额 Top 5
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-              {data.slice(0, 5).map((model, i) => (
+              {data.slice(0, 5).map((model) => (
                 <div key={model.model_name} className="space-y-2">
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-gray-300 truncate max-w-[120px]">{model.model_name}</span>

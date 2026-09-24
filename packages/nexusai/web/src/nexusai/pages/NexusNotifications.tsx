@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
-import { SNPageHeader, SNLoading, SNEmptyState } from '../components/StoryNestUI';
+import { SNLoading, SNEmptyState } from '../components/StoryNestUI';
 import { motion } from 'motion/react'
-import { Bell, Check, CheckCheck, Trash2, AlertCircle, Info, Zap, Gift, Megaphone } from 'lucide-react'
+import { Bell, Check, CheckCheck, Trash2, AlertCircle, Info, Gift, Megaphone } from 'lucide-react'
 import { api } from '@/lib/api'
 
 interface Announcement {

@@ -71,7 +71,7 @@ if (!rootElement) {
 ;(function initSystemBranding() {
   try {
     if (typeof window === 'undefined' || typeof document === 'undefined') return
-    const apply = (name: string) => {
+    const apply = () => {
       // 强制使用 NexusAI，不使用后端配置的系统名称
       const nexusName = 'NexusAI'
       document.title = nexusName
@@ -82,7 +82,7 @@ if (!rootElement) {
     }
     // Cache-first
     const cached = readCachedStatus()
-    if (cached?.system_name) apply(cached.system_name as string)
+    if (cached?.system_name) apply()
     if (cached?.logo) applyFaviconToDom(cached.logo as string)
 
     // Background refresh through the shared cache. This primes ['status']
@@ -92,7 +92,7 @@ if (!rootElement) {
     queryClient
       .ensureQueryData(statusQueryOptions)
       .then((s) => {
-        if (s?.system_name) apply(s.system_name as string)
+        if (s?.system_name) apply()
         if (s?.logo) applyFaviconToDom(s.logo as string)
       })
       .catch(() => {

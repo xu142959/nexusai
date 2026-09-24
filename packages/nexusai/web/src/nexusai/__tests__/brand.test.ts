@@ -7,7 +7,7 @@ describe('BRAND config', () => {
   })
 
   it('has short name', () => {
-    expect(BRAND.shortName).toBe('nexusai')
+    expect(BRAND.shortName).toBe('NexusAI')
   })
 
   it('has tagline', () => {

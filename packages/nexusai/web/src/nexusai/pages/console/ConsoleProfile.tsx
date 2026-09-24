@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { SNPageHeader, SNCard, SNBadge, SNButton, SNStatCard } from '../../components/StoryNestUI';
 import { User, Mail, Calendar, Shield, Save } from 'lucide-react'
 import { api } from '@/lib/api'
 import { toast } from 'sonner'

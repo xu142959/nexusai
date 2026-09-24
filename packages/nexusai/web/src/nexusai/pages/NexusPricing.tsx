@@ -1,13 +1,12 @@
 import { useState, useEffect, useMemo } from 'react'
-import { SNPageHeader, SNLoading, SNEmptyState } from '../components/StoryNestUI';
-import { Link, useRouter } from '@tanstack/react-router'
+import { SNLoading, SNEmptyState } from '../components/StoryNestUI';
+import { Link } from '@tanstack/react-router'
 import { motion } from 'motion/react'
 import {
-  Check, ArrowRight, Zap, Shield, Clock, HelpCircle,
+  ArrowRight, Zap, Shield, Clock, HelpCircle,
   ChevronDown, ChevronUp, CreditCard, Coins, Calculator,
   Search, TrendingUp, Cpu,
 } from 'lucide-react'
-import { BRAND } from '../config/brand'
 import { getCommonHeaders, api } from '@/lib/api'
 
 interface ModelPricing {
@@ -55,8 +54,7 @@ const features = [
 ]
 
 export function NexusPricing() {
-  const router = useRouter()
-  const [isAuthed, setIsAuthed] = useState(false)
+  const [, setIsAuthed] = useState(false)
   const [pricingLoading, setPricingLoading] = useState(true)
   const [pricingError, setPricingError] = useState<string | null>(null)
   const [modelPricingList, setModelPricingList] = useState<ModelPricing[]>([])
@@ -113,13 +111,6 @@ export function NexusPricing() {
     }
   }, [modelPricingList])
 
-  const handleRecharge = () => {
-    if (isAuthed) {
-      router.navigate({ to: '/console/billing' })
-    } else {
-      router.navigate({ to: '/sign-in' })
-    }
-  }
   const [openFaq, setOpenFaq] = useState<number | null>(0)
   const [tokenUsage, setTokenUsage] = useState(50000000)
   const [modelType, setModelType] = useState('text')

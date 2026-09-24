@@ -73,14 +73,13 @@ interface ChatState {
   setActive: (id: string) => void
   addMessage: (convId: string, msg: Omit<ChatMessage, 'id' | 'createdAt'>) => void
   updateMessage: (convId: string, msgId: string, content: string) => void
-  deleteMessage: (convId: string, msgId: string) => void
   updateConversation: (convId: string, patch: Partial<ChatConversation>) => void
   clearAll: () => void
 }
 
 export const useChatStore = create<ChatState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       conversations: [],
       activeId: null,
 

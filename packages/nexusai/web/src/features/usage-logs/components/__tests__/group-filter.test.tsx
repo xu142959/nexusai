@@ -60,7 +60,7 @@ function FilterFixture() {
 }
 
 async function renderFilter(
-  initialEntry = '/usage-logs/common',
+  initialEntry = '/admin/usage-logs/common',
   groups: Record<string, { desc: string; ratio: number }> | null = {
     default: { desc: '', ratio: 1 },
     premium: { desc: '', ratio: 2 },
@@ -79,15 +79,15 @@ async function renderFilter(
     return { data: { success: true, data: { quota: 0, rpm: 0, tpm: 0 } } }
   })
   const root = createRootRoute()
-  const auth = createRoute({ getParentRoute: () => root, id: '_authenticated' })
+  const admin = createRoute({ getParentRoute: () => root, path: '/admin' })
   const logs = createRoute({
-    getParentRoute: () => auth,
+    getParentRoute: () => admin,
     path: '/usage-logs/$section',
     component: FilterFixture,
     validateSearch: (search: Record<string, unknown>) => search,
   })
   const router = createRouter({
-    routeTree: root.addChildren([auth.addChildren([logs])]),
+    routeTree: root.addChildren([admin.addChildren([logs])]),
     history: createMemoryHistory({ initialEntries: [initialEntry] }),
   })
   const client = new QueryClient({
@@ -173,7 +173,7 @@ it.each([{}, null])(
   'preserves historical input and supports clearing when groups are unavailable (%s)',
   async (groups) => {
     const router = await renderFilter(
-      '/usage-logs/common?group=retired',
+      '/admin/usage-logs/common?group=retired',
       groups
     )
     const input = screen.getByRole('combobox', { name: 'Group' })
@@ -195,18 +195,18 @@ it.each([{}, null])(
 )
 
 it('resets the selected group and restores a group from URL navigation', async () => {
-  const router = await renderFilter('/usage-logs/common?group=premium')
+  const router = await renderFilter('/admin/usage-logs/common?group=premium')
   const input = screen.getByRole('combobox', { name: 'Group' })
   expect(input).toHaveValue('premium')
   await userEvent.click(screen.getByRole('button', { name: 'Reset' }))
   await waitFor(() => expect(input).toHaveValue(''))
   expect(router.state.location.search).not.toHaveProperty('group')
-  await router.history.push('/usage-logs/common?group=retired')
+  await router.history.push('/admin/usage-logs/common?group=retired')
   await waitFor(() => expect(input).toHaveValue('retired'))
 })
 
 it('keeps a selected group visible on focus and can clear it without choosing another option', async () => {
-  const router = await renderFilter('/usage-logs/common?group=premium')
+  const router = await renderFilter('/admin/usage-logs/common?group=premium')
   const input = screen.getByRole('combobox', { name: 'Group' })
   await userEvent.click(input)
   expect(input).toHaveValue('premium')
@@ -245,7 +245,7 @@ it('lets mobile users select a long group name inside the filter drawer and subm
     matches: query === '(max-width: 640px)',
   }))
   const longGroup = 'enterprise-team-with-a-long-group-name'
-  const router = await renderFilter('/usage-logs/common', {
+  const router = await renderFilter('/admin/usage-logs/common', {
     [longGroup]: { desc: '', ratio: 1 },
   })
   const dialog = screen.getByRole('dialog')
@@ -269,7 +269,7 @@ it.each([1, 10])(
   'excludes only auto from group choices for role %s',
   async (role) => {
     useAuthStore.getState().auth.setUser({ id: 1, username: 'viewer', role })
-    const router = await renderFilter('/usage-logs/common', {
+    const router = await renderFilter('/admin/usage-logs/common', {
       auto: { desc: '', ratio: 1 },
       'auto-team': { desc: '', ratio: 1 },
     })
@@ -288,7 +288,7 @@ it.each([1, 10])(
 )
 
 it('keeps historical auto values editable when auto is the only available group', async () => {
-  const router = await renderFilter('/usage-logs/common?group=auto', {
+  const router = await renderFilter('/admin/usage-logs/common?group=auto', {
     auto: { desc: '', ratio: 1 },
   })
   const input = screen.getByRole('combobox', { name: 'Group' })

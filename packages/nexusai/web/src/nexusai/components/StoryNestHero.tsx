@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { Link, useRouter } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
 import { motion } from 'motion/react'
 import { Menu, X, Search } from 'lucide-react'
-import { BRAND } from '../config/brand'
 import { StoryNestUserMenu } from './StoryNestUserMenu'
 import './storynest.css'
 
@@ -40,27 +39,8 @@ function BlurRevealText({ text, delay = 0, className = '', hoverKey = 0 }: {
   )
 }
 
-// ============ 滚动文字悬停组件 ============
-function RollingText({ label, className = '', active = false }: {
-  label: string
-  className?: string
-  active?: boolean
-}) {
-  return (
-    <span className={`relative inline-block overflow-hidden ${className}`}>
-      <span className="inline-block transition-transform duration-350 ease-[cubic-bezier(0.33,1,0.68,1)] group-hover:-translate-y-[110%]">
-        {label}
-      </span>
-      <span className="absolute left-0 top-0 inline-block translate-y-[110%] transition-transform duration-350 ease-[cubic-bezier(0.33,1,0.68,1)] group-hover:translate-y-0">
-        {label}
-      </span>
-    </span>
-  )
-}
-
 // ============ 主组件 ============
 export function StoryNestHero() {
-  const router = useRouter()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [activeNav, setActiveNav] = useState('Home')
   const [hoverCounter, setHoverCounter] = useState(0)

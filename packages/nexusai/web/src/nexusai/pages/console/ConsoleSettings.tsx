@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
-import { SNPageHeader, SNCard, SNBadge, SNButton, SNStatCard, SNLoading, SNEmptyState } from '../../components/StoryNestUI';
-import { motion } from 'motion/react'
+import { SNLoading } from '../../components/StoryNestUI';
 import {
-  Settings, Moon, Sun, Globe, Bell, Palette, Save,
+  Moon, Sun, Globe, Bell, Palette, Save,
   Monitor, Languages, User, Mail, Calendar, Coins,
 } from 'lucide-react'
 import { api } from '@/lib/api'
@@ -45,7 +44,7 @@ export function ConsoleSettings() {
   const [saving, setSaving] = useState(false)
   const [loading, setLoading] = useState(true)
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const [, setError] = useState<string | null>(null)
 
   // 从 New API 获取用户信息
   useEffect(() => {

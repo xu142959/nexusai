@@ -1,25 +1,10 @@
-import { Link, useRouter } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
 import { motion } from 'motion/react'
-import { ShieldCheck, ArrowLeft, ShieldX } from 'lucide-react'
-import { useState } from 'react'
+import { ShieldCheck, ArrowLeft } from 'lucide-react'
 import { UserAuthForm } from '@/features/auth/sign-in/components/user-auth-form'
 import { BRAND } from '../config/brand'
-import { useAuthStore } from '@/stores/auth-store'
 
 export function AdminSignIn() {
-  const router = useRouter()
-  const [roleError, setRoleError] = useState(false)
-
-  // 登录成功后检查是否是管理员
-  const handleAdminRedirect = async () => {
-    const { auth } = useAuthStore.getState()
-    if (auth.user && auth.user.role >= 100) {
-      router.navigate({ to: '/admin/dashboard' })
-    } else {
-      setRoleError(true)
-    }
-  }
-
   return (
     <div className="nexus-auth-page">
       <div className="nexus-auth-bg">
@@ -61,18 +46,6 @@ export function AdminSignIn() {
             <h1>管理后台登录</h1>
             <p>仅限管理员账户访问</p>
           </div>
-
-          {roleError && (
-            <div style={{
-              display: 'flex', alignItems: 'center', gap: 8,
-              background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)',
-              borderRadius: 12, padding: '12px 16px', marginBottom: 16,
-              color: '#fca5a5', fontSize: 13,
-            }}>
-              <ShieldX size={16} />
-              当前账户没有管理员权限，请使用管理员账号登录
-            </div>
-          )}
 
           <UserAuthForm redirectTo="/admin/dashboard" />
         </div>

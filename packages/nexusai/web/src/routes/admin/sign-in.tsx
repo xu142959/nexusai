@@ -11,7 +11,7 @@ const searchSchema = z.object({
 export const Route = createFileRoute('/admin/sign-in')({
   component: AdminSignIn,
   validateSearch: searchSchema,
-  beforeLoad: async ({ search }) => {
+  beforeLoad: async () => {
     await resolveAuthentication()
     const { auth } = useAuthStore.getState()
     if (auth.user) {

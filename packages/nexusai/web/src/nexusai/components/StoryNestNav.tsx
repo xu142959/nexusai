@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useRouter, useLocation } from '@tanstack/react-router'
+import { Link, useLocation } from '@tanstack/react-router'
 import { motion } from 'motion/react'
 import { Menu, X, Search } from 'lucide-react'
 import { BRAND } from '../config/brand'
@@ -18,7 +18,6 @@ const navItems = [
 
 
 export function StoryNestNav() {
-  const router = useRouter()
   const location = useLocation()
   const [mobileOpen, setMobileOpen] = useState(false)
   const activeNav = navItems.find(item => item.href === '/' ? location.pathname === '/' : location.pathname.startsWith(item.href))?.label || 'Home'

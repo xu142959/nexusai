@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { motion, AnimatePresence } from 'motion/react'
-import { Search, Home, MessageSquare, BarChart3, CreditCard, BookOpen, Terminal, KeyRound, Settings, X, ArrowRight, Sparkles, Zap, Cpu, FlaskConical } from 'lucide-react'
+import { Search, Home, BarChart3, CreditCard, BookOpen, Terminal, KeyRound, Settings, ArrowRight, Sparkles, Zap, Cpu, FlaskConical } from 'lucide-react'
 import { api } from '@/lib/api'
 import './command-palette.css'
 

@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react'
 import { SNPageHeader } from '../components/StoryNestUI';
 import { motion } from 'motion/react'
 import {
-  BookOpen, Code2, Terminal, KeyRound, MessageSquare,
+  BookOpen, Terminal, KeyRound, MessageSquare,
   Copy, Check, ChevronRight, AlertCircle, Zap, Shield,
 } from 'lucide-react'
 

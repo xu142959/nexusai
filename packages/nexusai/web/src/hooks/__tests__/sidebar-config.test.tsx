@@ -146,10 +146,10 @@ describe('audit log sidebar entry', () => {
     const usageIndex = items.findIndex((item) => item.title === 'Usage Logs')
     expect(items[usageIndex + 1]).toMatchObject({
       title: 'Audit Logs',
-      url: '/usage-logs/audit',
+      url: '/admin/usage-logs/audit',
     })
     const selected = items.filter((item) =>
-      checkIsActive('/usage-logs/audit', item)
+      checkIsActive('/admin/usage-logs/audit', item)
     )
     expect(selected.map((item) => item.title)).toEqual(['Audit Logs'])
   })

@@ -2,7 +2,7 @@ import { motion } from 'motion/react'
 import { useEffect, useState } from 'react'
 import { SNPageHeader } from '../components/StoryNestUI';
 import {
-  Target, Eye, Users, Globe, Zap, Shield, Heart,
+  Target, Eye, Globe, Zap, Shield, Heart,
   Link, Mail,
 } from 'lucide-react'
 import { Link as RouterLink } from '@tanstack/react-router'

@@ -1,7 +1,6 @@
-import { useState, useEffect, useMemo } from 'react'
-import { SNPageHeader, SNCard, SNBadge, SNButton, SNStatCard } from '../../components/StoryNestUI';
+import { useState, useEffect } from 'react'
 import { motion } from 'motion/react'
-import { BarChart3, TrendingUp, Clock, Zap, DollarSign, Search, Filter, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react'
+import { BarChart3, TrendingUp, Clock, Zap, DollarSign, Search, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react'
 import { api } from '@/lib/api'
 import { toast } from 'sonner'
 
@@ -190,7 +189,7 @@ export function ConsoleUsage() {
         <div className="mb-8">
           <h3 className="font-semibold text-white mb-4">热门模型</h3>
           <div className="space-y-2">
-            {topModels.map(([model, data], i) => (
+            {topModels.map(([model, data]) => (
               <div key={model} className="bg-white/[0.03] border border-white/5 rounded-lg p-4">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-white">{model}</span>

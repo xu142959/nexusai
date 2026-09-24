@@ -95,16 +95,16 @@ async function renderLogs(props: {
     return { data: { success: true, data } }
   })
   const root = createRootRoute()
-  const auth = createRoute({ getParentRoute: () => root, id: '_authenticated' })
+  const admin = createRoute({ getParentRoute: () => root, path: '/admin' })
   const logs = createRoute({
-    getParentRoute: () => auth,
+    getParentRoute: () => admin,
     path: '/usage-logs/$section',
     component: LogsFixture,
     validateSearch: (search: Record<string, unknown>) => search,
   })
   const router = createRouter({
-    routeTree: root.addChildren([auth.addChildren([logs])]),
-    history: createMemoryHistory({ initialEntries: ['/usage-logs/common'] }),
+    routeTree: root.addChildren([admin.addChildren([logs])]),
+    history: createMemoryHistory({ initialEntries: ['/admin/usage-logs/common'] }),
   })
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false } },

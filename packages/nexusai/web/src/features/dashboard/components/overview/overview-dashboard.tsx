@@ -85,11 +85,11 @@ const SETUP_GUIDE_CODE_PATTERN = [
 ].join('\n')
 
 type DashboardActionPath =
-  | '/keys'
-  | '/wallet'
-  | '/playground'
-  | '/channels'
-  | '/usage-logs'
+  | '/admin/keys'
+  | '/admin/wallet'
+  | '/admin/playground'
+  | '/admin/channels'
+  | '/admin/usage-logs'
   | '/pricing'
 
 interface StartStep {
@@ -367,7 +367,7 @@ function RequestPreview(props: {
             {isCopying ? t('Loading') : t('Copy')}
           </Button>
         ) : (
-          <Button size='sm' variant='outline' render={<Link to='/keys' />}>
+          <Button size='sm' variant='outline' render={<Link to='/admin/keys' />}>
             {t('Create API Key')}
           </Button>
         )}
@@ -684,7 +684,7 @@ export function OverviewDashboard() {
                               <ChevronUp data-icon='inline-start' />
                               {t('Hide setup guide')}
                             </Button>
-                            <Button size='sm' render={<Link to='/keys' />}>
+                            <Button size='sm' render={<Link to='/admin/keys' />}>
                               <KeyRound data-icon='inline-start' />
                               {t('Create API Key')}
                             </Button>

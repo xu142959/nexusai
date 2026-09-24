@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { SNPageHeader, SNCard, SNBadge, SNButton, SNStatCard } from '../../components/StoryNestUI';
 import { motion } from 'motion/react'
 import { CreditCard, Wallet, Gift, Check, Zap } from 'lucide-react'
 import { api } from '@/lib/api'

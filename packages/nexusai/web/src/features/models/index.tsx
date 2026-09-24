@@ -63,7 +63,7 @@ const SECTION_META: Record<
 
 function ModelsContent() {
   const { t } = useTranslation()
-  const navigate = useNavigate({ from: '/models/$section' })
+  const navigate = useNavigate({ from: '/admin/models/$section' })
   const { tabCategory, setTabCategory, setOpen, setCurrentVendor } = useModels()
   const params = route.useParams()
   const activeSection = (params.section ??

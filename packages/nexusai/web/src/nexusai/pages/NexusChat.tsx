@@ -1,13 +1,13 @@
 import { useState, useRef, useEffect, useCallback, memo } from 'react'
 import {
   Send, Bot, User, Plus, MessageSquare, KeyRound, AlertCircle,
-  Trash2, Copy, Check, Settings, X, StopCircle, RotateCcw, Pencil,
+  Trash2, Copy, Check, Settings, X, StopCircle, RotateCcw,
   ChevronDown, Menu, Sparkles, LogOut,
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'motion/react'
-import { Link, useSearch, useRouter } from '@tanstack/react-router'
+import { Link, useRouter } from '@tanstack/react-router'
 import { useShallow } from 'zustand/shallow'
-import { api, clearAuthentication } from '@/lib/api'
+import { clearAuthentication } from '@/lib/api'
 import { useChatStore, type ChatMessage } from '../store/chatStore'
 import { getApiKey, clearApiKeyCache } from '../lib/apikey'
 import { Markdown } from '../components/Markdown'
@@ -108,8 +108,6 @@ const ChatMessages = memo(function ChatMessages({
 const EMPTY_MESSAGES: ChatMessage[] = []
 
 export function NexusChat() {
-  const search = useSearch({ strict: false }) as { model?: string }
-
   // Only subscribe to the action functions and activeId. Subscribing to the
   // whole `conversations` array would re-render the parent on every SSE
   // chunk during streaming. The actual message rendering lives in the
@@ -197,7 +195,6 @@ export function NexusChat() {
     addMessage(activeConv.id, userMsg)
 
     // 添加空的助手消息
-    const assistantId = Math.random().toString(36).slice(2)
     addMessage(activeConv.id, { role: 'assistant', content: '' })
 
     setLoading(true)
@@ -231,7 +228,7 @@ export function NexusChat() {
         throw new Error(`HTTP ${response.status}: ${errText}`)
       }
 
-      const reader = response.body?.getReader()
+      let reader = response.body?.getReader()
       const decoder = new TextDecoder()
       let reply = ''
       let lastMsgId: string | null = null
@@ -251,7 +248,7 @@ export function NexusChat() {
           if (line.startsWith('data: ')) {
             const data = line.slice(6)
             if (data === '[DONE]') {
-              reader = null
+              reader = undefined
               break
             }
             try {

@@ -25,20 +25,20 @@ describe('legacy frontend route migration', () => {
     const routes = {
       '/login': '/sign-in',
       '/forbidden': '/403',
-      '/console': '/dashboard',
-      '/console/models': '/models',
-      '/console/deployment': '/models/deployments',
-      '/console/subscription': '/subscriptions',
-      '/console/channel': '/channels',
-      '/console/token': '/keys',
-      '/console/playground': '/playground',
-      '/console/redemption': '/redemption-codes',
-      '/console/user': '/users',
-      '/console/personal': '/profile',
-      '/console/log': '/usage-logs',
-      '/console/midjourney': '/usage-logs/drawing',
-      '/console/task': '/usage-logs/task',
-      '/console/chat/42': '/chat/42',
+      '/console': '/admin/dashboard',
+      '/console/models': '/admin/models/metadata',
+      '/console/deployment': '/admin/models/deployments',
+      '/console/subscription': '/admin/subscriptions',
+      '/console/channel': '/admin/channels',
+      '/console/token': '/admin/keys',
+      '/console/playground': '/admin/playground',
+      '/console/redemption': '/admin/redemption-codes',
+      '/console/user': '/admin/users',
+      '/console/personal': '/admin/profile',
+      '/console/log': '/admin/usage-logs/common',
+      '/console/midjourney': '/admin/usage-logs/drawing',
+      '/console/task': '/admin/usage-logs/task',
+      '/console/chat/42': '/admin/chat/42',
     }
 
     for (const [source, target] of Object.entries(routes)) {
@@ -51,24 +51,24 @@ describe('legacy frontend route migration', () => {
       '/sign-in?redirect=%2Fkeys#continue'
     )
     expect(resolveLegacyRoute('/console/topup?source=email#orders')).toBe(
-      '/wallet?source=email#orders'
+      '/admin/wallet?source=email#orders'
     )
   })
 
   test('maps legacy settings tabs and retains unrelated parameters', () => {
     const settingsTabs = {
-      operation: '/system-settings/operations/behavior',
-      dashboard: '/system-settings/content/dashboard',
-      chats: '/system-settings/content/chat',
-      drawing: '/system-settings/content/drawing',
-      payment: '/system-settings/billing/payment',
-      ratio: '/system-settings/billing/model-pricing',
-      ratelimit: '/system-settings/security/rate-limit',
-      models: '/system-settings/models/global',
-      'model-deployment': '/system-settings/models/model-deployment',
-      performance: '/system-settings/operations/performance',
-      system: '/system-settings/site/system-info',
-      other: '/system-settings/site/system-info',
+      operation: '/admin/system-settings/operations/behavior',
+      dashboard: '/admin/system-settings/content/dashboard',
+      chats: '/admin/system-settings/content/chat',
+      drawing: '/admin/system-settings/content/drawing',
+      payment: '/admin/system-settings/billing/payment',
+      ratio: '/admin/system-settings/billing/model-pricing',
+      ratelimit: '/admin/system-settings/security/rate-limit',
+      models: '/admin/system-settings/models/global',
+      'model-deployment': '/admin/system-settings/models/model-deployment',
+      performance: '/admin/system-settings/operations/performance',
+      system: '/admin/system-settings/site/system-info',
+      other: '/admin/system-settings/site/system-info',
     }
 
     for (const [tab, target] of Object.entries(settingsTabs)) {
@@ -77,13 +77,13 @@ describe('legacy frontend route migration', () => {
       ).toBe(`${target}?tab=${tab}&from=bookmark#form`)
     }
     expect(resolveLegacyRoute('/console/setting?tab=unknown')).toBe(
-      '/system-settings?tab=unknown'
+      '/admin/system-settings?tab=unknown'
     )
   })
 
   test('safely redirects unknown console locations without touching new routes', () => {
     expect(resolveLegacyRoute('/console/removed?page=2#old')).toBe(
-      '/dashboard?page=2#old'
+      '/admin/dashboard?page=2#old'
     )
     expect(resolveLegacyRoute('/dashboard')).toBe(null)
     expect(resolveLegacyRoute('/api/status')).toBe(null)

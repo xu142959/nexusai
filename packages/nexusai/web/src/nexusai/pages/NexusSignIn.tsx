@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { motion } from 'motion/react'
-import { Hexagon, ArrowRight } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { UserAuthForm } from '@/features/auth/sign-in/components/user-auth-form'
 import { TermsFooter } from '@/features/auth/components/terms-footer'
 import { useStatus } from '@/hooks/use-status'

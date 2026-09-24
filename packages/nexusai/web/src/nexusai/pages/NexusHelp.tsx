@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { SNPageHeader } from '../components/StoryNestUI';
 import { motion } from 'motion/react'
 import {
-  HelpCircle, Search, ChevronDown, ChevronUp, MessageCircle,
-  Mail, BookOpen, Zap, KeyRound, CreditCard, Shield,
+  HelpCircle, Search, ChevronDown, ChevronUp,
+  Mail, BookOpen, Zap, CreditCard, Shield,
 } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 

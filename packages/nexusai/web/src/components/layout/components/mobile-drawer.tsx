@@ -116,7 +116,7 @@ function MobileUserProfile({ user, onNavigate }: MobileUserProfileProps) {
 
         {/* Navigation links - same style as top nav */}
         <Link
-          to='/profile'
+          to='/admin/profile'
           onClick={onNavigate}
           className='text-primary/60 hover:text-primary/80 border-border flex items-center gap-2.5 border-b p-2.5 transition-colors'
         >
@@ -126,7 +126,7 @@ function MobileUserProfile({ user, onNavigate }: MobileUserProfileProps) {
 
         {isSecurityVisible && (
           <Link
-            to='/security'
+            to='/admin/security'
             onClick={onNavigate}
             className='text-primary/60 hover:text-primary/80 border-border flex items-center gap-2.5 border-b p-2.5 transition-colors'
           >
@@ -136,7 +136,7 @@ function MobileUserProfile({ user, onNavigate }: MobileUserProfileProps) {
         )}
 
         <Link
-          to='/wallet'
+          to='/admin/wallet'
           onClick={onNavigate}
           className='text-primary/60 hover:text-primary/80 border-border flex items-center gap-2.5 border-b p-2.5 transition-colors'
         >

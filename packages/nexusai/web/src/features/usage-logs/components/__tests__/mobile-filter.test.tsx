@@ -83,18 +83,18 @@ async function renderMobileFilter() {
     },
   }))
   const root = createRootRoute()
-  const auth = createRoute({ getParentRoute: () => root, id: '_authenticated' })
+  const admin = createRoute({ getParentRoute: () => root, path: '/admin' })
   const logs = createRoute({
-    getParentRoute: () => auth,
+    getParentRoute: () => admin,
     path: '/usage-logs/$section',
     component: Fixture,
     validateSearch: (search: Record<string, unknown>) => search,
   })
   const router = createRouter({
-    routeTree: root.addChildren([auth.addChildren([logs])]),
+    routeTree: root.addChildren([admin.addChildren([logs])]),
     history: createMemoryHistory({
       initialEntries: [
-        '/usage-logs/common?page=3&type=%5B%222%22%5D&group=default',
+        '/admin/usage-logs/common?page=3&type=%5B%222%22%5D&group=default',
       ],
     }),
   })

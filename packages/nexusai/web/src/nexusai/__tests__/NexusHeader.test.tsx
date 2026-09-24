@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { NexusHeader } from '../components/NexusHeader'
 
 // Mock TanStack Router
@@ -20,7 +20,7 @@ describe('NexusHeader', () => {
 
   it('renders brand name', () => {
     render(<NexusHeader />)
-    expect(screen.getByText('nexusai')).toBeInTheDocument()
+    expect(screen.getByText('NexusAI')).toBeInTheDocument()
   })
 
   it('renders navigation links', () => {
@@ -34,8 +34,8 @@ describe('NexusHeader', () => {
 
   it('shows sign in and sign up buttons when not authenticated', () => {
     render(<NexusHeader />)
-    expect(screen.getByText('Sign in')).toBeInTheDocument()
-    expect(screen.getByText('Sign Up')).toBeInTheDocument()
+    expect(screen.getByText('登录')).toBeInTheDocument()
+    expect(screen.getByText('注册')).toBeInTheDocument()
   })
 
   it('has correct brand color', () => {
