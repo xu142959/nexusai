@@ -18,6 +18,7 @@ type flowQuotaResponse struct {
 }
 
 func setupFlowControllerTestDB(t *testing.T) {
+	lockControllerGlobalState(t)
 	t.Helper()
 	db := setupModelListControllerTestDB(t)
 	require.NoError(t, db.AutoMigrate(&model.Token{}, &model.QuotaData{}))

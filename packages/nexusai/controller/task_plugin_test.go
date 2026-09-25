@@ -26,6 +26,7 @@ import (
 )
 
 func setupTaskPluginControllerTest(t *testing.T) {
+	lockControllerGlobalState(t)
 	t.Helper()
 	originalDB := model.DB
 	database, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{})
@@ -142,6 +143,7 @@ func klingFactoryVersion(t *testing.T) string {
 }
 
 func setupTaskPluginFactoryDisableTest(t *testing.T) {
+	lockControllerGlobalState(t)
 	t.Helper()
 	setupTaskPluginControllerTest(t)
 	originalMap := common.OptionMap
@@ -1155,6 +1157,7 @@ func TestUploadTaskPluginSourceSha256(t *testing.T) {
 }
 
 func setupTaskPluginMarketplaceSourcesTest(t *testing.T) {
+	lockControllerGlobalState(t)
 	t.Helper()
 	setupTaskPluginControllerTest(t)
 	originalMap := common.OptionMap

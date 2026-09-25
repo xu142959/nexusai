@@ -110,6 +110,7 @@ func modelManagementRequest(t *testing.T, handler gin.HandlerFunc, method, path 
 }
 
 func TestModelPricingConversionDatabaseMatrix(t *testing.T) {
+	lockControllerGlobalState(t)
 	previousQuota := common.QuotaPerUnit
 	common.QuotaPerUnit = 500000
 	t.Cleanup(func() { common.QuotaPerUnit = previousQuota })
@@ -474,6 +475,7 @@ func TestModelPricingConversionDatabaseMatrix(t *testing.T) {
 }
 
 func TestModelManagementDatabaseMatrix(t *testing.T) {
+	lockControllerGlobalState(t)
 	_, err := jsplugin.DefaultRegistry.Register(`
 export const meta = {apiVersion: 1, key: "model-management-task", name: "Management task fixture", version: "1.0.0", author: {name: "Test"}, models: ["matrix-task"], fetchMode: "per_task", usageSchema: {seconds: {type: "number", unit: "second"}}};
 export function buildSubmitRequest() { return {}; }
@@ -1076,6 +1078,7 @@ func TestMetadataSyncLocaleAndEndpointValidation(t *testing.T) {
 }
 
 func TestVendorManagementDatabaseMatrix(t *testing.T) {
+	lockControllerGlobalState(t)
 	for _, dialect := range []struct{ kind, env string }{{"sqlite", ""}, {"mysql", "TEST_MYSQL_DSN"}, {"postgres", "TEST_POSTGRES_DSN"}} {
 		t.Run(dialect.kind, func(t *testing.T) {
 			if dialect.env != "" && os.Getenv(dialect.env) == "" {
@@ -1288,6 +1291,7 @@ func TestVendorManagementDatabaseMatrix(t *testing.T) {
 }
 
 func TestModelDeletionDatabaseMatrix(t *testing.T) {
+	lockControllerGlobalState(t)
 	for _, dialect := range []struct{ kind, env string }{{"sqlite", ""}, {"mysql", "TEST_MYSQL_DSN"}, {"postgres", "TEST_POSTGRES_DSN"}} {
 		t.Run(dialect.kind, func(t *testing.T) {
 			if dialect.env != "" && os.Getenv(dialect.env) == "" {
@@ -1505,6 +1509,7 @@ func TestModelDeletionDatabaseMatrix(t *testing.T) {
 }
 
 func TestSharedModelPluginPricingDatabaseMatrix(t *testing.T) {
+	lockControllerGlobalState(t)
 	const name = "shared-model::priced"
 	const base = `tier("base", u("seconds") * 0.4)`
 	const variant = `tier("beta", u("credits") * 2)`

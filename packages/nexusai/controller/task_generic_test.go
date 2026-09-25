@@ -23,6 +23,7 @@ import (
 )
 
 func setupGenericTaskTest(t *testing.T) *model.Task {
+	lockControllerGlobalState(t)
 	t.Helper()
 	originalDB := model.DB
 	previousRedisEnabled := common.RedisEnabled

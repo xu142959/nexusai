@@ -123,6 +123,7 @@ func TestRequestPolicyConfigReturnsSettingsWithoutMigration(t *testing.T) {
 }
 
 func TestRequestPolicyRoutingDatabaseMatrix(t *testing.T) {
+	lockControllerGlobalState(t)
 	require.NoError(t, i18n.Init())
 	for _, dialect := range []struct{ kind, env string }{{"sqlite", ""}, {"mysql", "TEST_MYSQL_DSN"}, {"postgres", "TEST_POSTGRES_DSN"}} {
 		t.Run(dialect.kind, func(t *testing.T) {

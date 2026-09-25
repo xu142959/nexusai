@@ -31,6 +31,7 @@ import (
 )
 
 func setupAccessTokenAudit(t *testing.T) (*model.User, string) {
+	lockControllerGlobalState(t)
 	t.Helper()
 	previousDB, previousLogDB := model.DB, model.LOG_DB
 	previousMain, previousLog := common.MainDatabaseType(), common.LogDatabaseType()
@@ -437,9 +438,28 @@ func (releasedAuditLog) TableName() string { return "logs" }
 func newAuditTestDatabase(t *testing.T, kind, dsn string) (*gorm.DB, string) {
 	t.Helper()
 	if kind == "sqlite" {
-		path := t.TempDir() + "/audit.db"
+		dir, err := os.MkdirTemp("", "auditdb-*")
+		require.NoError(t, err)
+		path := dir + "/audit.db"
 		db, err := gorm.Open(sqlite.Open(path), &gorm.Config{})
 		require.NoError(t, err)
+		t.Cleanup(func() {
+			connection, err := db.DB()
+			if err == nil {
+				_ = connection.Close()
+			}
+			// Windows can delay releasing a SQLite file handle past Close(),
+			// which makes t.TempDir()'s RemoveAll fail and the test red. The
+			// directory is managed manually so a delayed unlink is a silent
+			// best-effort instead of a test failure.
+			for i := 0; i < 40; i++ {
+				if err := os.Remove(path); err == nil {
+					break
+				}
+				time.Sleep(50 * time.Millisecond)
+			}
+			_ = os.RemoveAll(dir)
+		})
 		return db, path
 	}
 	require.NotEmpty(t, dsn)
@@ -631,6 +651,7 @@ func TestAuditOtherDatabaseEncoding(t *testing.T) {
 }
 
 func TestAuditDatabaseMatrix(t *testing.T) {
+	lockControllerGlobalState(t)
 	previousDB, previousLogDB := model.DB, model.LOG_DB
 	previousMain, previousLog := common.MainDatabaseType(), common.LogDatabaseType()
 	previousRedis := common.RedisEnabled
@@ -638,6 +659,15 @@ func TestAuditDatabaseMatrix(t *testing.T) {
 	common.IsMasterNode = true
 	common.RedisEnabled = false
 	t.Cleanup(func() {
+		// model.InitDB()/InitLogDB() reopen the audit.db path; their handles
+		// must be closed before the TempDir is removed or the file stays
+		// locked on Windows and the test fails in cleanup.
+		if connection, err := model.DB.DB(); err == nil {
+			_ = connection.Close()
+		}
+		if connection, err := model.LOG_DB.DB(); err == nil {
+			_ = connection.Close()
+		}
 		common.IsMasterNode, common.SQLitePath = previousMaster, previousSQLite
 		model.DB, model.LOG_DB = previousDB, previousLogDB
 		common.SetDatabaseTypes(previousMain, previousLog)

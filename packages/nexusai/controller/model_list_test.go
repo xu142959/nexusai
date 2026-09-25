@@ -35,6 +35,7 @@ type userModelsResponse struct {
 }
 
 func setupModelListControllerTestDB(t *testing.T) *gorm.DB {
+	lockControllerGlobalState(t)
 	t.Helper()
 
 	initModelListColumnNames(t)

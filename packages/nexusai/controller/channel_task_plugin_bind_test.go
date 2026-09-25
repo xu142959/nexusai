@@ -20,6 +20,7 @@ import (
 )
 
 func setupTaskPluginBindChannelTest(t *testing.T) {
+	lockControllerGlobalState(t)
 	t.Helper()
 	wasMaster := common.IsMasterNode
 	common.IsMasterNode = true

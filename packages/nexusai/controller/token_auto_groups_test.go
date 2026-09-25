@@ -39,6 +39,7 @@ func stringInt(value int) string {
 }
 
 func setupTokenAutoGroupsControllerTest(t *testing.T) *model.User {
+	lockControllerGlobalState(t)
 	t.Helper()
 	db := setupTokenControllerTestDB(t)
 	require.NoError(t, db.AutoMigrate(&model.User{}))

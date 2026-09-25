@@ -58,6 +58,7 @@ type telegramOAuthFixture struct {
 }
 
 func setupTelegramOAuthTest(t *testing.T) *telegramOAuthFixture {
+	lockControllerGlobalState(t)
 	t.Helper()
 	user, identity := setupSecurityEnrollmentTest(t)
 	require.NoError(t, model.DB.AutoMigrate(&model.ExternalIdentityClaim{}, &model.Option{}))

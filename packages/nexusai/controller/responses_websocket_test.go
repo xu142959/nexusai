@@ -39,6 +39,7 @@ import (
 var responsesWSTestUserSequence atomic.Int64
 
 func setupResponsesWSRequestTest(t *testing.T) (*model.User, *model.Token) {
+	lockControllerGlobalState(t)
 	t.Helper()
 	previousDB := model.DB
 	previousLogDB := model.LOG_DB

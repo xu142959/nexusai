@@ -652,6 +652,7 @@ func (*authFlowTestOAuthProvider) GetProviderPrefix() string                    
 func (*authFlowTestOAuthProvider) ProviderUserIDColumn() string                   { return "" }
 
 func setupAuthFlowControllerTest(t *testing.T) *authFlowTestOAuthProvider {
+	lockControllerGlobalState(t)
 	t.Helper()
 	previousDB, previousLogDB := model.DB, model.LOG_DB
 	previousRedis := common.RedisEnabled

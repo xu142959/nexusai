@@ -111,6 +111,7 @@ func migrateTokenControllerTestDB(t *testing.T, db *gorm.DB) {
 }
 
 func setupTokenControllerTestDB(t *testing.T) *gorm.DB {
+	lockControllerGlobalState(t)
 	t.Helper()
 
 	db := openTokenControllerTestDB(t)
@@ -586,6 +587,7 @@ func TestGetTokenKeyRequiresOwnershipAndReturnsFullKey(t *testing.T) {
 }
 
 func TestAPITokenAuditDatabaseMatrix(t *testing.T) {
+	lockControllerGlobalState(t)
 	for _, database := range []struct {
 		name, env string
 		typ       common.DatabaseType

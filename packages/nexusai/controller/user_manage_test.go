@@ -28,6 +28,7 @@ import (
 )
 
 func setupManageUserTestDB(t *testing.T) *gorm.DB {
+	lockControllerGlobalState(t)
 	t.Helper()
 	require.NoError(t, i18n.Init())
 	previousDB, previousLogDB := model.DB, model.LOG_DB

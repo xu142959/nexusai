@@ -191,6 +191,7 @@ export function parseTaskResult() { return {}; }
 // Covers configuration persistence, validation, reservation and reconciliation
 // through the same public entry points used by the relay.
 func TestPreConsumePolicyDatabaseMatrix(t *testing.T) {
+	lockControllerGlobalState(t)
 	previousConfig := config.GlobalConfig.ExportAllConfigs()
 	previousUnit, previousBatch := common.QuotaPerUnit, common.BatchUpdateEnabled
 	common.QuotaPerUnit, common.BatchUpdateEnabled = 500000, false
