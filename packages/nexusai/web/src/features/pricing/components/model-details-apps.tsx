@@ -123,6 +123,9 @@ export function ModelDetailsApps(props: { model: PricingModel }) {
   const top = apps[0]
   return (
     <div className='flex flex-col gap-4'>
+      <div className='rounded-md border border-dashed border-amber-400/40 bg-amber-400/10 px-3 py-2 text-xs text-amber-600 dark:text-amber-300'>
+        以下应用排行数据为示例数据，后端暂未提供真实统计。
+      </div>
       <div className='grid grid-cols-1 gap-2 sm:grid-cols-3'>
         <div className='bg-muted/20 rounded-lg border p-3'>
           <div className='text-muted-foreground text-[10px] font-medium tracking-wider uppercase'>

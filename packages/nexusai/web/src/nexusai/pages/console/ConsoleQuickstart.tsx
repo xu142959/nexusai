@@ -106,12 +106,12 @@ export function ConsoleQuickstart() {
         if (data.length > 0) {
           // 列表里的 key 是掩码，需取明文
           const keyRes = await api.post(`/api/token/${data[0].id}/key`, {}, { skipErrorHandler: true })
-          setApiKey(keyRes.data?.data?.key || 'sk-...')
+          setApiKey(keyRes.data?.data?.key || '')
         } else {
           setApiKey('')
         }
       } catch {
-        setApiKey('sk-your-api-key')
+        setApiKey('')
       }
     }
     loadKeys()
@@ -176,10 +176,10 @@ export function ConsoleQuickstart() {
         </div>
         <div className="flex items-center gap-3">
           <div className="flex-1 bg-black/40 border border-white/10 rounded-lg px-4 py-3 font-mono text-sm text-gray-300 truncate">
-            {apiKey || 'sk-your-api-key'}
+            {apiKey || (keys.length > 0 ? '获取密钥失败，请刷新重试' : '尚未创建 API Key')}
           </div>
           <button
-            onClick={copyKey}
+            onClick={copyKey} disabled={!apiKey}
             className="flex items-center gap-2 px-4 py-2.5 bg-[#c8ff00] text-black rounded-lg text-sm font-medium hover:bg-[#b8ef00] transition-colors flex-shrink-0"
           >
             <Copy size={14} /> 复制
