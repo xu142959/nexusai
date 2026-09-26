@@ -106,7 +106,11 @@ func (token *Token) GetIpLimits() []string {
 func GetAllUserTokens(userId int, startIdx int, num int) ([]*Token, error) {
 	var tokens []*Token
 	var err error
-	err = DB.Where("user_id = ?", userId).Order("id desc").Limit(num).Offset(startIdx).Find(&tokens).Error
+	query := DB.Order("id desc")
+	if userId > 0 {
+		query = query.Where("user_id = ?", userId)
+	}
+	err = query.Limit(num).Offset(startIdx).Find(&tokens).Error
 	return tokens, err
 }
 
@@ -183,7 +187,10 @@ func SearchUserTokens(userId int, keyword string, token string, offset int, limi
 		}
 	}
 
-	baseQuery := DB.Model(&Token{}).Where("user_id = ?", userId)
+	baseQuery := DB.Model(&Token{})
+	if userId > 0 {
+		baseQuery = baseQuery.Where("user_id = ?", userId)
+	}
 
 	// 非空才加 LIKE 条件，空则跳过（不过滤该字段）
 	if keyword != "" {
@@ -437,7 +444,11 @@ func decreaseTokenQuota(id int, quota int) (err error) {
 // CountUserTokens returns total number of tokens for the given user, used for pagination
 func CountUserTokens(userId int) (int64, error) {
 	var total int64
-	err := DB.Model(&Token{}).Where("user_id = ?", userId).Count(&total).Error
+	query := DB.Model(&Token{})
+	if userId > 0 {
+		query = query.Where("user_id = ?", userId)
+	}
+	err := query.Count(&total).Error
 	return total, err
 }
 

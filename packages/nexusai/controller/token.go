@@ -129,6 +129,10 @@ func setTokenAutoGroups(c *gin.Context, token *model.Token, groups []string) boo
 
 func GetAllTokens(c *gin.Context) {
 	userId := c.GetInt("id")
+	// Root 管理员可查看全部用户的令牌；普通用户仅查看自己的
+	if c.GetInt("role") >= common.RoleRootUser {
+		userId = 0
+	}
 	pageInfo := common.GetPageQuery(c)
 	tokens, err := model.GetAllUserTokens(userId, pageInfo.GetStartIdx(), pageInfo.GetPageSize())
 	if err != nil {
@@ -143,6 +147,10 @@ func GetAllTokens(c *gin.Context) {
 
 func SearchTokens(c *gin.Context) {
 	userId := c.GetInt("id")
+	// Root 管理员可搜索全部用户的令牌
+	if c.GetInt("role") >= common.RoleRootUser {
+		userId = 0
+	}
 	keyword := c.Query("keyword")
 	token := c.Query("token")
 
