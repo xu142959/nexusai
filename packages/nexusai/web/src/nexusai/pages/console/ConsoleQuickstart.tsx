@@ -107,7 +107,8 @@ export function ConsoleQuickstart() {
         if (data.length > 0) {
           // 列表里的 key 是掩码，需取明文
           const keyRes = await api.post(`/api/token/${data[0].id}/key`, {}, { skipErrorHandler: true })
-          setApiKey(keyRes.data?.data?.key || '')
+          const rawKey = keyRes.data?.data?.key || ''
+          setApiKey(rawKey.startsWith('sk-') ? rawKey : 'sk-' + rawKey)
         } else {
           setApiKey('')
         }

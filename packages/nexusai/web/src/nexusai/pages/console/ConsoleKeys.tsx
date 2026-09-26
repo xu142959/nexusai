@@ -83,7 +83,8 @@ export function ConsoleKeys() {
     if (fullKeys[token.id]) return fullKeys[token.id]
     try {
       const res = await api.post('/api/token/' + token.id + '/key', {}, { skipErrorHandler: true })
-      const key = res.data?.data?.key || ''
+      const raw = res.data?.data?.key || ''
+      const key = raw.startsWith('sk-') ? raw : 'sk-' + raw
       if (key) setFullKeys(prev => ({ ...prev, [token.id]: key }))
       return key
     } catch (e: any) {
@@ -216,7 +217,7 @@ export function ConsoleKeys() {
                       <span className="text-[#c8ff00] break-all">{fullKeys[token.id] || token.key}</span>
                     ) : (
                       <span className="text-gray-500">
-                        {token.key.slice(0, 7)}••••••••••••{token.key.slice(-4)}
+                        sk-{token.key.slice(0, 7)}••••••••••••{token.key.slice(-4)}
                       </span>
                     )}
                     <button
