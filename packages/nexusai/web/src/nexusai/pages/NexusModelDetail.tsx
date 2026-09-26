@@ -1,3 +1,4 @@
+import { copyToClipboard } from '@/lib/copy-to-clipboard'
 import { useState, useEffect } from 'react'
 import { Link, useParams, useRouter } from '@tanstack/react-router'
 import { motion } from 'motion/react'
@@ -100,7 +101,7 @@ console.log(response.choices[0].message.content)`,
   const capabilities = ['chat', 'streaming', 'function-call']
 
   const copyCode = () => {
-    navigator.clipboard.writeText(codeExamples[activeTab].code(modelName))
+    copyToClipboard(codeExamples[activeTab].code(modelName))
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }

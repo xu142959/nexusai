@@ -1,4 +1,5 @@
-﻿import { useState, useEffect } from 'react'
+import { copyToClipboard } from '@/lib/copy-to-clipboard'
+import { useState, useEffect } from 'react'
 import { Link } from '@tanstack/react-router'
 import { motion } from 'motion/react'
 import {
@@ -110,7 +111,7 @@ export function NexusHome() {
   }, [])
 
   const copyCode = () => {
-    navigator.clipboard.writeText(codeExamples[activeTab].code)
+    copyToClipboard(codeExamples[activeTab].code)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }

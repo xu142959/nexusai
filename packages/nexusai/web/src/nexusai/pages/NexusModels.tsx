@@ -1,4 +1,5 @@
-﻿import { useState, useEffect, useMemo } from 'react'
+import { copyToClipboard } from '@/lib/copy-to-clipboard'
+import { useState, useEffect, useMemo } from 'react'
 import { Link } from '@tanstack/react-router'
 import { Search, Copy, Check, ChevronDown, LayoutGrid, List, Filter, Sparkles, MessageSquare, GitCompare, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'motion/react'
@@ -162,7 +163,7 @@ export function NexusModels() {
     return result
   }, [models, search, selectedProvider, selectedTag, selectedEndpoint, sortBy])
 
-  const copyName = (name: string) => { navigator.clipboard.writeText(name); setCopiedName(name); setTimeout(() => setCopiedName(null), 2000) }
+  const copyName = (name: string) => { copyToClipboard(name); setCopiedName(name); setTimeout(() => setCopiedName(null), 2000) }
   const resetFilters = () => { setSelectedProvider('all'); setSelectedTag('all'); setSelectedEndpoint('all'); setSearch('') }
 
   const FilterSection = ({ title, items, selected, onSelect }: { title: string; items: string[]; selected: string; onSelect: (v: string) => void }) => (

@@ -1,3 +1,4 @@
+import { copyToClipboard } from '@/lib/copy-to-clipboard'
 import { useState, useMemo } from 'react'
 import { SNPageHeader } from '../components/StoryNestUI';
 import { motion } from 'motion/react'
@@ -101,7 +102,7 @@ func main() {
   const [activeSection, setActiveSection] = useState('quickstart')
 
   const copyCode = () => {
-    navigator.clipboard.writeText(codeExamples[activeTab])
+    copyToClipboard(codeExamples[activeTab])
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }

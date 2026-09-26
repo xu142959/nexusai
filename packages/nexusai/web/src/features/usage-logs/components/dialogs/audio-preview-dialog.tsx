@@ -16,6 +16,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
+import { copyToClipboard } from '@/lib/copy-to-clipboard'
 import { ExternalLink, Copy, Music } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -112,7 +113,7 @@ function AudioClipCard({ clip }: { clip: AudioClip }) {
               size='sm'
               className='h-7 gap-1 text-xs'
               onClick={() => {
-                navigator.clipboard.writeText(audioUrl)
+                copyToClipboard(audioUrl)
                 toast.success(t('Copied'))
               }}
             >

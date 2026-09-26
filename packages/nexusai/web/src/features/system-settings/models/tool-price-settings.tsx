@@ -16,6 +16,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
+import { copyToClipboard } from '@/lib/copy-to-clipboard'
 import { Code2, Copy, Eye, Plus, Trash2 } from 'lucide-react'
 import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -213,7 +214,7 @@ export const ToolPriceSettings = memo(function ToolPriceSettings({
 
   const handleCopyJson = useCallback(async () => {
     try {
-      await navigator.clipboard.writeText(jsonText)
+      await copyToClipboard(jsonText)
       toast.success(t('Copied to clipboard'))
     } catch {
       toast.error(t('Failed to copy'))

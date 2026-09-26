@@ -1,3 +1,4 @@
+import { copyToClipboard } from '@/lib/copy-to-clipboard'
 import { useState, useRef, useEffect, useCallback, memo } from 'react'
 import {
   Send, Bot, User, Plus, MessageSquare, KeyRound, AlertCircle,
@@ -331,7 +332,7 @@ export function NexusChat() {
   }
 
   const copyMessage = async (content: string, id: string) => {
-    await navigator.clipboard.writeText(content)
+    await copyToClipboard(content)
     setCopiedId(id)
     setTimeout(() => setCopiedId(null), 2000)
   }

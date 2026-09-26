@@ -18,6 +18,7 @@ For commercial licensing, please contact support@quantumnous.com
 */
 /* eslint-disable react-refresh/only-export-components */
 'use client'
+import { copyToClipboard } from '@/lib/copy-to-clipboard'
 
 import { javascript } from '@codemirror/lang-javascript'
 import { markdown } from '@codemirror/lang-markdown'
@@ -659,7 +660,7 @@ export const CodeBlockCopyButton = ({
     }
 
     try {
-      await navigator.clipboard.writeText(code)
+      await copyToClipboard(code)
       setIsCopied(true)
       onCopy?.()
       setTimeout(() => setIsCopied(false), timeout)

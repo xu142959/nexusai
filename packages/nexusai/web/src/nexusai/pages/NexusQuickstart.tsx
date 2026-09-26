@@ -1,3 +1,4 @@
+import { copyToClipboard } from '@/lib/copy-to-clipboard'
 import { useState, useMemo } from 'react'
 import { Link } from '@tanstack/react-router'
 import { motion } from 'motion/react'
@@ -81,7 +82,7 @@ console.log(response.choices[0].message.content)`,
   const [copied, setCopied] = useState(false)
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(codeExamples[activeTab].code)
+    copyToClipboard(codeExamples[activeTab].code)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }

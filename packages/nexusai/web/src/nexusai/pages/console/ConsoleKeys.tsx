@@ -1,3 +1,4 @@
+import { copyToClipboard } from '@/lib/copy-to-clipboard'
 import { useState, useEffect } from 'react'
 import { motion } from 'motion/react'
 import {
@@ -100,7 +101,7 @@ export function ConsoleKeys() {
   const copyKey = async (token: Token) => {
     const key = await getFullKey(token)
     if (!key) return
-    await navigator.clipboard.writeText(key)
+    await copyToClipboard(key)
     setCopiedId(token.id)
     setTimeout(() => setCopiedId(null), 2000)
   }

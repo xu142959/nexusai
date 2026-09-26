@@ -16,6 +16,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
+import { copyToClipboard } from '@/lib/copy-to-clipboard'
 import { useQuery } from '@tanstack/react-query'
 import { Copy, ExternalLink, Loader2, RefreshCcw } from 'lucide-react'
 /*
@@ -121,7 +122,7 @@ export function ViewDetailsDialog({
       return
     }
     try {
-      await navigator.clipboard.writeText(String(deploymentId))
+      await copyToClipboard(String(deploymentId))
       toast.success(t('Copied'))
     } catch (error) {
       handleServerError(error, t('Copy failed'))

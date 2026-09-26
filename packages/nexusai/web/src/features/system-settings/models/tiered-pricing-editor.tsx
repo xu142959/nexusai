@@ -16,6 +16,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
+import { copyToClipboard } from '@/lib/copy-to-clipboard'
 import { Copy, Plus, Trash2 } from 'lucide-react'
 import {
   memo,
@@ -987,7 +988,7 @@ function LlmPromptHelper({ modelName }: LlmPromptHelperProps) {
 
   const handleCopy = useCallback(async () => {
     try {
-      await navigator.clipboard.writeText(prompt)
+      await copyToClipboard(prompt)
       toast.success(t('Copied to clipboard'))
     } catch {
       toast.error(t('Failed to copy'))

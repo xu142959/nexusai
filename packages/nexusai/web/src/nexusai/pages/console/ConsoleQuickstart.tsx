@@ -1,3 +1,4 @@
+import { copyToClipboard } from '@/lib/copy-to-clipboard'
 import { useState, useEffect } from 'react'
 import { motion } from 'motion/react'
 import { Copy, Check, Terminal, Code2, BookOpen, Zap, KeyRound, Globe, Cpu } from 'lucide-react'
@@ -119,14 +120,14 @@ export function ConsoleQuickstart() {
 
   const copyCode = async () => {
     const code = codeExamples[activeTab](apiKey, baseUrl)
-    await navigator.clipboard.writeText(code)
+    await copyToClipboard(code)
     setCopied(true)
     toast.success('代码已复制到剪贴板')
     setTimeout(() => setCopied(false), 2000)
   }
 
   const copyKey = async () => {
-    await navigator.clipboard.writeText(apiKey)
+    await copyToClipboard(apiKey)
     toast.success('API Key 已复制')
   }
 
