@@ -25,6 +25,7 @@ export function ConsoleKeys() {
   const [loading, setLoading] = useState(true)
   const [showKey, setShowKey] = useState<number | null>(null)
   const [copiedId, setCopiedId] = useState<number | null>(null)
+  const [fullKeys, setFullKeys] = useState<Record<number, string>>({})
   const [showCreate, setShowCreate] = useState(false)
   const [newName, setNewName] = useState('')
 
@@ -77,9 +78,30 @@ export function ConsoleKeys() {
     }
   }
 
-  const copyKey = async (key: string, id: number) => {
+  const getFullKey = async (token: Token): Promise<string> => {
+    if (fullKeys[token.id]) return fullKeys[token.id]
+    try {
+      const res = await api.post('/api/token/' + token.id + '/key', {}, { skipErrorHandler: true })
+      const key = res.data?.data?.key || ''
+      if (key) setFullKeys(prev => ({ ...prev, [token.id]: key }))
+      return key
+    } catch (e: any) {
+      toast.error('获取密钥失败：' + (e.message || '未知错误'))
+      return ''
+    }
+  }
+
+  const toggleShowKey = async (token: Token) => {
+    if (showKey === token.id) { setShowKey(null); return }
+    const key = await getFullKey(token)
+    if (key) setShowKey(token.id)
+  }
+
+  const copyKey = async (token: Token) => {
+    const key = await getFullKey(token)
+    if (!key) return
     await navigator.clipboard.writeText(key)
-    setCopiedId(id)
+    setCopiedId(token.id)
     setTimeout(() => setCopiedId(null), 2000)
   }
 
@@ -190,20 +212,20 @@ export function ConsoleKeys() {
                   </div>
                   <div className="flex items-center gap-2 font-mono text-sm">
                     {showKey === token.id ? (
-                      <span className="text-[#c8ff00]">{token.key}</span>
+                      <span className="text-[#c8ff00] break-all">{fullKeys[token.id] || token.key}</span>
                     ) : (
                       <span className="text-gray-500">
                         {token.key.slice(0, 7)}••••••••••••{token.key.slice(-4)}
                       </span>
                     )}
                     <button
-                      onClick={() => setShowKey(showKey === token.id ? null : token.id)}
+                      onClick={() => toggleShowKey(token)}
                       className="text-gray-500 hover:text-white transition-colors"
                     >
                       {showKey === token.id ? <EyeOff size={14} /> : <Eye size={14} />}
                     </button>
                     <button
-                      onClick={() => copyKey(token.key, token.id)}
+                      onClick={() => copyKey(token)}
                       className="text-gray-500 hover:text-white transition-colors"
                     >
                       {copiedId === token.id ? <Check size={14} className="text-green-400" /> : <Copy size={14} />}
