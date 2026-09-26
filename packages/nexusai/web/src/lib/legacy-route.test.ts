@@ -25,7 +25,6 @@ describe('legacy frontend route migration', () => {
     const routes = {
       '/login': '/sign-in',
       '/forbidden': '/403',
-      '/console': '/admin/dashboard',
       '/console/models': '/admin/models/metadata',
       '/console/deployment': '/admin/models/deployments',
       '/console/subscription': '/admin/subscriptions',
@@ -81,7 +80,12 @@ describe('legacy frontend route migration', () => {
     )
   })
 
-  test('safely redirects unknown console locations without touching new routes', () => {
+  test('keeps new NexusAI console routes on the user console', () => {
+    expect(resolveLegacyRoute('/console')).toBe(null)
+    expect(resolveLegacyRoute('/console/keys')).toBe(null)
+  })
+
+    test('safely redirects unknown console locations without touching new routes', () => {
     expect(resolveLegacyRoute('/console/removed?page=2#old')).toBe(
       '/admin/dashboard?page=2#old'
     )

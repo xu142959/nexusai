@@ -40,9 +40,8 @@ export function NexusAbout() {
     api.get('/api/pricing').then((res) => {
       const data = res.data?.data || []
       setModelCount(data.length)
-      const providers = new Set<string>()
-      data.forEach((m: any) => { if (m.provider_name) providers.add(m.provider_name) })
-      setProviderCount(providers.size)
+      const vendors = res.data?.vendors || []
+      setProviderCount(Array.isArray(vendors) ? vendors.length : 0)
     }).catch(() => {})
     api.get('/api/status').then((res) => {
       const v = res.data?.data?.version
