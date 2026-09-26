@@ -19,6 +19,7 @@ For commercial licensing, please contact support@quantumnous.com
 const legacyOrigin = 'https://legacy-route.invalid'
 
 const legacyConsoleRoutes: Record<string, string> = {
+  '/console': '/admin/dashboard',
   '/console/models': '/admin/models/metadata',
   '/console/deployment': '/admin/models/deployments',
   '/console/subscription': '/admin/subscriptions',
@@ -81,12 +82,8 @@ export function resolveLegacyRoute(rawHref: string): string | null {
     return null
   }
 
-  // 跳过 NexusAI 新控制台路由（/console 概览与各子页均属用户端控制台，
-  // 不做旧路由重定向；旧版 /console/* 管理端链接仍由下方 legacy 映射接管）
-  if (
-    source.pathname === '/console' ||
-    NEXUSAI_CONSOLE_ROUTES.some(route => source.pathname === route || source.pathname.startsWith(route + '/'))
-  ) {
+  // 跳过 NexusAI 新控制台路由
+  if (NEXUSAI_CONSOLE_ROUTES.some(route => source.pathname === route || source.pathname.startsWith(route + '/'))) {
     return null
   }
 

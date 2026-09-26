@@ -97,9 +97,12 @@ export function NexusHome() {
     api.get('/api/pricing').then((res) => {
       const data = res.data?.data || []
       setModelCount(data.length)
-      // 提供商数量取自接口返回的 vendors 列表（真实渠道供应商）
-      const vendors = res.data?.vendors || []
-      setProviderCount(Array.isArray(vendors) ? vendors.length : 0)
+      // 从模型列表中提取提供商
+      const providers = new Set<string>()
+      data.forEach((m: any) => {
+        if (m.provider_name) providers.add(m.provider_name)
+      })
+      setProviderCount(providers.size)
       // 取前6个模型作为热门
       setHotModels(data.slice(0, 6).map((m: any) => m.id || m.model_name || m.name))
     }).catch(() => {
