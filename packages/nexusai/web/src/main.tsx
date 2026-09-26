@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright (C) 2023-2026 QuantumNous
 
 This program is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@ import { initializeFrontendCache } from '@/lib/frontend-cache'
 import { createAppQueryClient } from '@/lib/query-client'
 import { readCachedStatus, statusQueryOptions } from '@/lib/status-query'
 
+import { AppErrorBoundary } from '@/components/app-error-boundary'
 import { DirectionProvider } from './context/direction-provider'
 import { FontProvider } from './context/font-provider'
 import { ThemeProvider } from './context/theme-provider'
@@ -106,6 +107,7 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
+      <AppErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
           <FontProvider>
@@ -115,6 +117,7 @@ if (!rootElement.innerHTML) {
           </FontProvider>
         </ThemeProvider>
       </QueryClientProvider>
+      </AppErrorBoundary>
     </StrictMode>
   )
 }

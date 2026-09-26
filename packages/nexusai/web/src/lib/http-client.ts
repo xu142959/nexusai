@@ -58,21 +58,53 @@ export const api = axios.create({
 const inFlightGet = new Map<string, Promise<unknown>>()
 const originalGet = api.get.bind(api)
 
+// 短期结果缓存：同会话内相同 GET（含参数）在 TTL 内直接复用，降低页面
+// 重复挂载 / 多组件并发加载时的请求风暴；TTL 很短以保持数据新鲜。
+const getResultCache = new Map<
+  string,
+  { expiresAt: number; promise: Promise<unknown> }
+>()
+const GET_RESULT_TTL_MS = 1500
+
 api.get = ((url: string, config: ApiRequestConfig = {}) => {
   if (config.disableDuplicate) return originalGet(url, config)
 
   const params = config.params ? JSON.stringify(config.params) : '{}'
   const sessionSID = useAuthStore.getState().auth.session?.sid || 'anonymous'
   const key = `${sessionSID}:${url}?${params}`
+
+  const cached = getResultCache.get(key)
+  if (cached && cached.expiresAt > Date.now()) return cached.promise
+
   const existingRequest = inFlightGet.get(key)
   if (existingRequest) return existingRequest
 
-  const request = originalGet(url, config).finally(() => {
-    inFlightGet.delete(key)
-  })
+  const request = originalGet(url, config)
   inFlightGet.set(key, request)
+  request
+    .then(() => {
+      getResultCache.set(key, {
+        expiresAt: Date.now() + GET_RESULT_TTL_MS,
+        promise: request,
+      })
+      setTimeout(() => {
+        const current = getResultCache.get(key)
+        if (current?.promise === request) getResultCache.delete(key)
+      }, GET_RESULT_TTL_MS + 100)
+    })
+    .catch(() => {
+      getResultCache.delete(key)
+    })
+    .finally(() => {
+      inFlightGet.delete(key)
+    })
   return request
 }) as typeof api.get
+
+// 写操作成功后使 GET 短期缓存失效，避免列表类数据短暂陈旧。
+function clearGetResultCache(): void {
+  getResultCache.clear()
+}
 
 function redirectToSignIn(): void {
   if (
@@ -87,6 +119,11 @@ api.interceptors.response.use(
   (response) => {
     if (response.config.acceptAuthRotation && response.data?.success === true) {
       applyAuthRotation(response.data.data)
+    }
+
+    const method = (response.config.method || 'get').toLowerCase()
+    if (method !== 'get') {
+      clearGetResultCache()
     }
 
     return response
